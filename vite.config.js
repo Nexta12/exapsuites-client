@@ -23,4 +23,10 @@ export default defineConfig({
       '@dummy': path.resolve(__dirname, './src/dummy'),
     },
   },
+  preview: {
+    port: 3003,
+  },
+  server: {
+    port: 3003,
+  },
 });
