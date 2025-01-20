@@ -27,6 +27,7 @@ const Header = () => {
           <Link to={paths.Index} className="hover:text-accent transition" >Home</Link>
           <Link to={paths.Rooms} className="hover:text-accent transition" >Rooms</Link>
           <Link to={paths.Contact} className="hover:text-accent transition" >Contacts</Link>
+          <Link to={paths.AdminDashboard} className="hover:text-accent transition" >Admin</Link>
           <Link to={paths.Login} className="hover:text-accent transition" >Login</Link>
         </nav>
       </div>
