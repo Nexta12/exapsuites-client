@@ -12,7 +12,7 @@ const AllRooms = () => {
           {/* Overlay */}
           <div className="absolute w-full h-full bg-black/50"></div>
           {/* Title */}
-          <h1 className="text-6xl text-white z-20 font-primary text-center " >Our Exclusive Apartments & Suites </h1>
+          <h1 className="text-6xl text-white z-20 font-primary text-center " >Our Amazing  Suites </h1>
       </div>
       <div className="container mx-auto relative">
       <div className="bg-accent/20 mt-4 p-4 lg:shadow-xl lg:absolute lg:left-0 lg:right-0 lg:p-0 lg:z-30 lg:-top-12">
