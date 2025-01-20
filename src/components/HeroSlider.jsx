@@ -11,17 +11,17 @@ import { paths } from "@routes/paths";
 
 const slides = [
   {
-    title: "Your Luxury Apartments For Vacation",
+    title: "Your Luxury Apartments",
     bg: Img1,
     btnText: "See our rooms",
   },
   {
-    title: "Your Luxury Apartments For Vacation",
+    title: "Your Luxury Apartments",
     bg: Img2,
     btnText: "See our rooms",
   },
   {
-    title: "Your Luxury Apartments For Vacation",
+    title: "Your Luxury Apartments",
     bg: Img3,
     btnText: "See our rooms",
   },
