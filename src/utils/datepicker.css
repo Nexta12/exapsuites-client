@@ -32,7 +32,8 @@
 .react-datepicker__current-month {
   background: #aa8453;
   color: white;
-  padding: 0.3rem 0;
+  padding: 5px !important;
+  height: 50px;
 }
 .react-datepicker__navigation {
   top: 5px;
