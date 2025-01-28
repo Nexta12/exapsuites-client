@@ -6,6 +6,7 @@ export const paths = {
     ForgotPassword: '/reset-password',
     // Admin
     AdminDashboard: '/admin/dashboard',
+    GuestDashboard: '/guest/dashboard',
     Messages: '/admin/messages',
     Bookings: '/admin/bookings',
     UserManager: '/admin/users',

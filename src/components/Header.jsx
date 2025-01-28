@@ -1,13 +1,23 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { paths } from "@routes/paths";
 import { ExapLogo } from "./Logo";
+import useAuthStore from "@store/authStore";
 
 
 
 
 const Header = () => {
   const [header, setHeader] = useState(false);
+  const { isAuthenticated, validateAuth , logout} = useAuthStore();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const verifyAuth = async () => {
+      await validateAuth(); // Ensure validateAuth works properly
+    };
+    verifyAuth();
+  }, [validateAuth]);
 
   useEffect(()=>{
     window.addEventListener('scroll', ()=>{
@@ -27,8 +37,20 @@ const Header = () => {
           <Link to={paths.Index} className="hover:text-accent transition" >Home</Link>
           <Link to={paths.Rooms} className="hover:text-accent transition" >Rooms</Link>
           <Link to={paths.Contact} className="hover:text-accent transition" >Contacts</Link>
-          <Link to={paths.AdminDashboard} className="hover:text-accent transition" >Admin</Link>
-          <Link to={paths.Login} className="hover:text-accent transition" >Login</Link>
+          {isAuthenticated ? (
+            <Link
+              to="/"
+              onClick={() => logout(navigate)}
+              className="hover:text-accent transition"
+            >
+              Logout
+            </Link>
+          ) : (
+            <Link to={paths.Login} className="hover:text-accent transition">
+              Login
+            </Link>
+          )}
+       
         </nav>
       </div>
     </header>
