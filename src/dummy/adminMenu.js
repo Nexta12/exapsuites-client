@@ -41,6 +41,11 @@ export const DashMiddleMenu = [
   
   
     {
+      title: "More",
+      link: paths.services,
+      icon: BsGear ,
+    },
+    {
       title: "Settings",
       link: paths.services,
       icon: BsGear ,
