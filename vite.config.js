@@ -25,6 +25,7 @@ export default defineConfig({
   },
   preview: {
     port: 3003,
+    allowedHosts: ['exapsuites.revplusclients.com']
   },
  
 });
