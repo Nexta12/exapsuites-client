@@ -1,20 +1,20 @@
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
-import DeleteModal from "@components/DeleteModal";
 import Table from "@components/Table";
 import ErrorAlert from "@pages/errorPages/errorAlert";
-import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
-import { getNestedValue } from "@utils/helpers";
 import { useEffect, useRef, useState } from "react";
-import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
+import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
+import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
+import DeleteModal from "@components/DeleteModal";
 
-const Bookings = () => {
+const ApartmentManager = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [visiblePopup, setVisiblePopup] = useState(null);
   const popupRef = useRef(null);
+
 
   const [openModal, setOpenModal] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
@@ -28,7 +28,9 @@ const Bookings = () => {
     if (itemToDelete) {
       try {
         // Make an API call to delete the item
-        await apiClient.delete(`#`);
+        await apiClient.delete(
+          `${endpoints.deleteApartment}/${itemToDelete}`,
+        );
 
         // Remove the item from the list
         setData((prev) => prev.filter((user) => user._id !== itemToDelete));
@@ -36,20 +38,23 @@ const Bookings = () => {
         setOpenModal(false); // Close the modal
         setItemToDelete(null); // Reset the item to delete
       } catch (error) {
-        setError(ErrorFormatter(error));
+        setError(ErrorFormatter(error))
         setOpenModal(false); // Close the modal
         setItemToDelete(null); // Reset the item to delete
       }
     }
   };
 
-  const togglePopup = (_id) => {
+  const togglePopup = (_id ) => {
     setVisiblePopup((prev) => (prev === _id ? null : _id));
   };
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target)
+      ) {
         setVisiblePopup(null); // Dismiss popup
       }
     };
@@ -60,17 +65,14 @@ const Bookings = () => {
     };
   }, []);
 
-  const keyExtractor = (row) => row._id;
 
   const columns = [
-    // { key: "reference", header: "Reference" },
-
-    {
-      key: "reference",
-      header: "Reference",
+    { 
+      key: "title", 
+      header: "Apartment",
       render: (value, row) => (
-        <Link
-          to={`${paths.Bookings}/${row._id}`}
+        <Link 
+          to={`${paths.ApartmentManager}/${row._id}`}
           className={`hover:underline block max-w-[200px] truncate text-blue-600 `}
           title={value} // Shows full text on hover
         >
@@ -79,101 +81,41 @@ const Bookings = () => {
       ),
     },
 
-    {
-      key: "apartmentId.title",
-      header: "Apartment",
-      render: (_, row) => getNestedValue(row, "apartmentId.title"),
-    },
-    {
-      key: "contactInfo.fullName",
-      header: "Guest",
-      render: (_, row) =>
-        `${getNestedValue(row, "contactInfo.firstName")} ${
-          getNestedValue(row, "contactInfo.lastName") || "Processing..."
-        }`,
-    },
-    {
-      key: "startDate",
-      header: "Check In",
-    },
-    {
-      key: "endDate",
-      header: "Check Out",
-    },
-    {
-      key: "totalPrice",
-      header: "Total Cost (₦)",
+    { key: 'maxPeople', header: 'Capacity', className: "hidden lg:table-cell"},
+    { key: 'totalRooms', header: 'Rooms', className: "hidden lg:table-cell" },
+    { key: 'totalBalcony', header: 'Balcony', className: "hidden lg:table-cell" },
+    { key: 'totalBeds', header: 'Beds', className: "hidden lg:table-cell" },
+    { 
+      key: 'price', 
+      header: 'Price (₦)', 
       render: (value) => {
-        return new Intl.NumberFormat("en-US").format(value);
-      },
+        return new Intl.NumberFormat('en-US').format(value);
+      } 
     },
     {
-      key: "paymentStatus",
-      header: "Payment Status",
+      key: "bookingStatus",
+      header: "Status",
       render: (value) => {
         if (typeof value === "string") {
           // Determine the styles based on the value
           let bgClass = "";
           let textClass = "";
           switch (value) {
-            case "pending":
-              value = "in progress";
-              bgClass = "bg-yellow-100";
-              textClass = "text-yellow-800 capitalize text-[12px] ";
-              break;
-            case "failed":
-              bgClass = "bg-red-100";
-              textClass = "text-red-800 capitalize text-[12px] ";
-              break;
-            case "paid":
-              value = "Successful";
-              bgClass = "bg-accent";
-              textClass = "text-white capitalize text-[12px] ";
-              break;
-            default:
-              // Fallback for unexpected values
-              bgClass = "bg-gray-100";
-              textClass = "text-gray-800";
-          }
-
-          return (
-            <span
-              className={`px-2 py-1 rounded text-sm font-medium ${bgClass} ${textClass}`}
-            >
-              {value}
-            </span>
-          );
-        }
-
-        // Fallback for unexpected types
-        return null;
-      },
-    },
-    {
-      key: "status",
-      header: "Booking Status",
-      render: (value) => {
-        if (typeof value === "string") {
-          // Determine the styles based on the value
-          let bgClass = "";
-          let textClass = "";
-          switch (value) {
-            case "completed":
-              value = "Active";
+            case "free":
               bgClass = "bg-green-100";
-              textClass = "text-green-800 capitalize text-[12px] ";
+              textClass = "text-green-800 uppercase text-[12px] ";
               break;
-            case "pending":
+            case "reserved":
               bgClass = "bg-yellow-100";
-              textClass = "text-yellow-800 capitalize text-[12px] ";
+              textClass = "text-yellow-800 uppercase text-[12px] ";
               break;
-            case "canceled":
+            case "occupied":
               bgClass = "bg-red-100";
-              textClass = "text-red-800 capitalize text-[12px] ";
+              textClass = "text-red-800 uppercase text-[12px] ";
               break;
             case "confirmed":
               bgClass = "bg-blue-100";
-              textClass = "text-blue-800 capitalize text-[12px] ";
+              textClass = "text-blue-800 uppercase text-[12px] ";
               break;
             default:
               // Fallback for unexpected values
@@ -209,8 +151,8 @@ const Bookings = () => {
               ref={popupRef}
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
-              <Link to={`${paths.Bookings}/${row._id}`}>View</Link>
-              <Link to={`#`}>Update</Link>
+              <Link to={`${paths.ApartmentManager}/${row._id}`}>View</Link>
+              <Link to={`${paths.EditApartment}/${row._id}`}>Update</Link>
               <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"
@@ -222,27 +164,28 @@ const Bookings = () => {
         </div>
       ),
     },
+   
   ];
+
 
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
-
-  // Pagination
+  const keyExtractor = (row) => row._id;
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(7);
   const totalPages = Math.ceil(data.length / pageSize);
-
   const paginatedData = data.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get(endpoints.getAllBookings);
+        const response = await apiClient.get(endpoints.getAllApartments);
         setData(response.data);
         setError(null);
       } catch {
@@ -263,21 +206,21 @@ const Bookings = () => {
 
   return (
     <div>
-      <DeleteModal
+        <DeleteModal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
         onConfirm={confirmDelete}
         message="Are you Sure You want to this item ?"
       />
-      {/* Render ErrorAlert if there's an error */}
-      {error && <ErrorAlert message={error} />}
+        {/* Render ErrorAlert if there's an error */}
+        {error && <ErrorAlert message={error} />}
 
       <div className="mt-5 mb-8 w-full flex items-center justify-between">
-        <FaArrowLeftLong
+      <FaArrowLeftLong
           onClick={() => handleGoBack()}
           className="cursor-pointer text-2xl text-dark lg:hidden"
         />
-        <h1 className="text-primary tracking-[1px]">All Bookings</h1>
+        <h1 className="text-primary tracking-[1px]">All Apartments</h1>
         <div className="">
           <Link
             to={paths.AddApartment}
@@ -286,9 +229,10 @@ const Bookings = () => {
             Add New
           </Link>
         </div>
-        {/* Table */}
+         {/* Table */}
+      
       </div>
-      {/* Table */}
+       {/* Table */}
       <Table
         data={paginatedData}
         columns={columns}
@@ -301,4 +245,4 @@ const Bookings = () => {
   );
 };
 
-export default Bookings;
+export default ApartmentManager;

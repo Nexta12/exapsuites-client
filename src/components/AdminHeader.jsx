@@ -11,7 +11,15 @@ const AdminHeader = () => {
   const [notificationDropdown, setNotificationDropdown] = useState(false);
   const [userMenuDropdown, setUserMenuDropdown] = useState(false);
   const [sideBarToggle, setSideBarToggle] = useState(false);
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
+
+  const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
+  let title = pathSegments.pop(); // Get last segment
+
+  // Check if the last segment is an ID (typically a long alphanumeric string)
+  if (title && /^[a-fA-F0-9]{24}$/.test(title)) {
+    title = pathSegments.pop() || "Dashboard"; // Fallback to previous segment or default title
+  }
 
   const messageRef = useRef(null);
   const notificationRef = useRef(null);
@@ -78,8 +86,7 @@ const AdminHeader = () => {
         />
         <h3 className="h3 font-tertiary tracking-[2px] font-light capitalize">
           {/* Extract the Title of the page from the Pathname */}
-          {pathname.split("/").pop()}
-        
+          {title}
         </h3>
       </div>
 
@@ -188,14 +195,26 @@ const AdminHeader = () => {
           {/* Middle Part */}
           <div className="flex-2 ">
             {DashMiddleMenu.map((item, index) => {
-              return <SideBarLink key={index} item={item} handleSidebarToggle={handleSidebarToggle} pathname={pathname} />;
+              return (
+                <SideBarLink
+                  key={index}
+                  item={item}
+                  handleSidebarToggle={handleSidebarToggle}
+                  pathname={pathname}
+                />
+              );
             })}
           </div>
           {/*  bottom Part */}
 
           <div className="border-t border-yellow-900 pt-3">
             {DashBottomMenu.map((item, index) => (
-              <SideBarLink key={index} item={item} handleSidebarToggle={handleSidebarToggle} pathname={pathname} />
+              <SideBarLink
+                key={index}
+                item={item}
+                handleSidebarToggle={handleSidebarToggle}
+                pathname={pathname}
+              />
             ))}
           </div>
         </div>
@@ -209,9 +228,11 @@ function SideBarLink({ item, handleSidebarToggle, pathname }) {
   const isActive = pathname === item.link || pathname.includes(item.link);
   return (
     <Link
-      onClick={() => handleSidebarToggle() }
+      onClick={() => handleSidebarToggle()}
       to={item.link}
-      className={`${isActive ? 'bg-amber-600 text-white' : ''} flex items-center px-3 gap-x-3 mb-2 rounded-sm py-2 group hover:bg-amber-600 transition-all duration-300 ease-in-out `}
+      className={`${
+        isActive ? "bg-amber-600 text-white" : ""
+      } flex items-center px-3 gap-x-3 mb-2 rounded-sm py-2 group hover:bg-amber-600 transition-all duration-300 ease-in-out `}
     >
       <span className="text-xl">
         <Icon className="text-yellow-500 group-hover:text-black " />

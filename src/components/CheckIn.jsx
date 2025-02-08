@@ -4,10 +4,15 @@ import '../utils/datepicker.css'
 import { useRef, useState } from "react";
 import { BsCalendar } from "react-icons/bs";
 
-const CheckIn = () => {
+const CheckIn = ({onDateChange}) => {
   const [startDate, setStartDate] = useState(false);
   const datePickerRef = useRef(null);
   const today = new Date()
+
+  const handleDateChange = (date) => {
+    setStartDate(date);
+    onDateChange(date); 
+  };
 
   return (
     <div className="relative flex items-center justify-end h-full ">
@@ -17,7 +22,7 @@ const CheckIn = () => {
           <BsCalendar/>
         </div>
       </div>
-      <DatePicker ref={datePickerRef} className="w-full h-full" selected={startDate} placeholderText="Check in" onChange={(date) => setStartDate(date)} minDate={today} />
+      <DatePicker ref={datePickerRef} className="w-full h-full" selected={startDate} placeholderText="Check in" onChange={handleDateChange} minDate={today} />
     </div>
   )
 };

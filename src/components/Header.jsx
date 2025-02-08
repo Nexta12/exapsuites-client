@@ -35,7 +35,7 @@ const Header = () => {
         {/* nav */}
         <nav className={`${header ? 'text-primary' : 'text-white'} flex gap-x-4 font-tertiary tracking-[3px] text-[15px] items-center uppercase lg:gap-x-8`} >
           <Link to={paths.Index} className="hover:text-accent transition" >Home</Link>
-          <Link to={paths.Rooms} className="hover:text-accent transition" >Rooms</Link>
+          <Link to={paths.Apartment} className="hover:text-accent transition" >Apartments</Link>
           <Link to={paths.Contact} className="hover:text-accent transition" >Contacts</Link>
           {isAuthenticated ? (
             <Link

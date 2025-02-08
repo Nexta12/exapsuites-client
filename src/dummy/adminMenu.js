@@ -5,7 +5,7 @@ import { IoIosLogOut  } from "react-icons/io";
 import { MdDashboard, MdOutlineBedroomParent } from "react-icons/md";
 
 import { FaRegAddressCard, FaRegEnvelope } from "react-icons/fa";
-import { BsGear, BsPeople } from "react-icons/bs";
+import { BsGear, BsPeople, BsPeopleFill, BsPerson } from "react-icons/bs";
 
 
 export const DashMiddleMenu = [
@@ -25,12 +25,17 @@ export const DashMiddleMenu = [
       icon: FaRegAddressCard ,
     },
     {
-      title: "Rooms",
-      link: paths.RoomManager,
+      title: "Apartments",
+      link: paths.ApartmentManager,
       icon: MdOutlineBedroomParent,
     },
     {
-      title: "Users",
+      title: "Customers",
+      link: paths.Customers,
+      icon: BsPeopleFill ,
+    },
+    {
+      title: "Staff",
       link: paths.UserManager,
       icon: BsPeople ,
     },
@@ -41,9 +46,9 @@ export const DashMiddleMenu = [
   
   
     {
-      title: "More",
+      title: "Profile",
       link: paths.services,
-      icon: BsGear ,
+      icon:  BsPerson ,
     },
     {
       title: "Settings",

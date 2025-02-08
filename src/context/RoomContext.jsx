@@ -1,37 +1,67 @@
-import { roomData } from "@dummy/data";
+import { apiClient } from "@api/apiClient";
+import { endpoints } from "@api/endpoints";
+import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
+import { extractNumber } from "@utils/helpers";
 import { createContext, useEffect, useState } from "react";
 
 export const RoomContext = createContext();
 
 const RoomProvider = ({ children }) => {
-  const [rooms, setRooms] = useState(roomData);
-  const [adults, setAdults] = useState('1 Adult')
-  const [kids, setKids] = useState('0 Kids')
+  const [allRooms, setAllRooms] = useState([]);
+  const [rooms, setRooms] = useState([]);
+  const [adults, setAdults] = useState("1 Adult");
+  const [kids, setKids] = useState("0 Kids");
   const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(()=>{
-    setTotal(Number(adults[0]) + Number(kids[0]) )
-  },[adults, kids])
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await apiClient.get(endpoints.getAllApartments);
 
-  const handleClick = (e) =>{
+        setRooms(response.data);
+        setAllRooms(response.data);
+      } catch (error) {
+        setError(ErrorFormatter(error));
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
+//  Extract Number from Adults and Kids 
+  useEffect(() => {
+    setTotal(extractNumber(adults) + extractNumber(kids));
+  }, [adults, kids]);
+  
+
+  const handleClick = (e) => {
     e.preventDefault();
-    setLoading(true)
-    // filter rooms based on total
-
-    const newRooms = roomData.filter(room => {
-      return total <= room.maxPerson
-    })
-    setTimeout(()=>{
-      setRooms(newRooms)
-      setLoading(false)
-
-    },3000)
- 
-  }
+    setLoading(true);
+  
+    const newRooms = allRooms.filter((room) => total <= Number(room.maxPeople));
+  
+    setTimeout(() => {
+      setRooms(newRooms);
+      setLoading(false);
+    }, 3000);
+  };
 
   return (
-    <RoomContext.Provider value={{ rooms, setRooms, adults, setAdults, kids, setKids, handleClick, loading}}>
+    <RoomContext.Provider
+      value={{
+        rooms,
+        setRooms,
+        adults,
+        setAdults,
+        kids,
+        setKids,
+        handleClick,
+        loading,
+        error,
+      }}
+    >
       {children}
     </RoomContext.Provider>
   );

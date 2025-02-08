@@ -1,10 +1,55 @@
+import { apiClient } from "@api/apiClient";
+import { endpoints } from "@api/endpoints";
 import InputField from "@components/Input";
 import ScrollToTop from "@components/ScrollToTop";
 import Textarea from "@components/TextArea";
+import AlertMessage from "@pages/errorPages/AlertMessage";
+import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
+import { useState } from "react";
 import { FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 
 const ContactPage = () => {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [message, setMessage] = useState({
+    errorMessage: "",
+    successMessage: "",
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const messageInfo = {
+        fullName,
+        email,
+        message: contactMessage,
+      };
+
+       await apiClient.post(
+        endpoints.SendContactMessage,
+        messageInfo
+      );
+      
+      setMessage({errorMessage: '', successMessage: 'Message Sent !'})
+
+      setFullName('');
+      setEmail('');
+      setContactMessage('')
+
+      // Send Email to sender and Admin
+
+    } catch (error) {
+      setMessage({ errorMessage: ErrorFormatter(error), successMessage: "" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="">
       <ScrollToTop />
@@ -53,13 +98,38 @@ const ContactPage = () => {
             </div>
             {/* Contact Form */}
             <div className="my-12">
-                <h3 className="h3">Drop A Note </h3>
-                <form action="">
-                  <InputField placeholder='Your Name' />
-                  <InputField placeholder='Your Email' />
-                   <Textarea placeholder="Your Message" />
-                   <button className="btn btn-primary py-2 rounded-sm" >Submit</button>
-                </form>
+              <AlertMessage alert={message} />
+              <h3 className="h3">Drop A Note </h3>
+              <form action="#" onSubmit={handleSubmit}>
+                <InputField
+                  placeholder="Your Name"
+                  value={fullName}
+                  name="fullName"
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+                <InputField
+                  placeholder="Your Email"
+                  type="email"
+                  value={email}
+                  name="email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Textarea
+                  placeholder="Your Message"
+                  value={contactMessage}
+                  name="contactMessage"
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  required
+                />
+                <button
+                  type="submit"
+                  className="btn btn-primary py-2 rounded-sm"
+                >
+                 {loading ? 'Please wait...' : 'Send Message'}
+                </button>
+              </form>
             </div>
           </div>
           {/* right */}

@@ -5,10 +5,15 @@ import 'react-datepicker/dist/react-datepicker.css'
 import '../utils/datepicker.css'
 
 
-const CheckOut = () => {
+const CheckOut = ({ onDateChange }) => {
     const [endDate, setEndDate] = useState(false);
     const datePickerRef = useRef(null);
     const today = new Date();
+
+    const handleDateChange = (date) => {
+      setEndDate(date);
+      onDateChange(date); // Send date back to parent
+    };
 
     return (
       <div className="relative flex items-center justify-end h-full ">
@@ -17,7 +22,7 @@ const CheckOut = () => {
             <BsCalendar/>
           </div>
         </div>
-        <DatePicker ref={datePickerRef} className="w-full h-full" selected={endDate} placeholderText="Check out" onChange={(date) => setEndDate(date)} minDate={today} />
+        <DatePicker ref={datePickerRef} className="w-full h-full" selected={endDate} placeholderText="Check out" onChange={handleDateChange} minDate={today} />
       </div>
     )
 };

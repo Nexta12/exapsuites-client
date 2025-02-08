@@ -1,3 +1,4 @@
+import { DateFormatter } from "@utils/helpers";
 import React from "react";
 
 // Helper function to handle rendering cell values
@@ -13,14 +14,15 @@ const renderCellValue = (value) => {
       const date = new Date(value);
       if (!isNaN(date.getTime())) {
         // Format the date as DD/MM/YY
-        return new Intl.DateTimeFormat("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true, // 24-hour format
-        }).format(date);
+       return DateFormatter(date)
+        // return new Intl.DateTimeFormat("en-GB", {
+        //   day: "2-digit",
+        //   month: "2-digit",
+        //   year: "2-digit",
+        //   hour: "2-digit",
+        //   minute: "2-digit",
+        //   hour12: false, // 24-hour format
+        // }).format(date);
       }
     }
     return value; // Return the string as-is if it's not a valid date
@@ -37,6 +39,43 @@ const renderCellValue = (value) => {
   // Fallback for other types (e.g., objects, arrays)
   return String(value);
 };
+
+
+
+// const renderCellValue = (value) => {
+//   if (React.isValidElement(value)) {
+//     return value;
+//   }
+
+//   if (typeof value === "string") {
+//     const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
+//     if (isoDateRegex.test(value)) {
+//       const date = new Date(value);
+//       if (!isNaN(date.getTime())) {
+//         return new Intl.DateTimeFormat("en-GB", {
+//           day: "2-digit",
+//           month: "2-digit",
+//           year: "2-digit",
+//           hour: "2-digit",
+//           minute: "2-digit",
+//           hour12: true,
+//         }).format(date);
+//       }
+//     }
+//     return value;
+//   }
+
+//   if (typeof value === "number") {
+//     return value;
+//   }
+
+//   if (value === null || value === undefined) {
+//     return null;
+//   }
+
+//   return String(value);
+// };
+
 
 // Reusable Table component
 const Table = ({
@@ -122,7 +161,7 @@ const Table = ({
               {columns.map((column) => (
                 <th
                   key={String(column.key)}
-                  className="px-4 py-4 text-sm text-center font-medium border border-gray-300"
+                  className={`px-4 py-4 text-sm text-center font-medium border border-gray-300 ${column.className || ""}`}
                 >
                   {column.header}
                 </th>
@@ -136,14 +175,15 @@ const Table = ({
                 className={rowIndex % 2 === 0 ? "bg-white" : "bg-white"}
               >
                 {columns.map((column) => (
-                  <td
-                    key={`${keyExtractor(row)}-${String(column.key)}`}
-                    className="p-4 text-sm text-gray-600 border border-gray-300 text-center"
-                  >
-                    {column.render
-                      ? column.render(row[column.key], row)
-                      : renderCellValue(row[column.key])}
-                  </td>
+                 <td
+                 key={`${keyExtractor(row)}-${String(column.key)}`}
+                 className={`p-4 text-sm text-gray-600 border border-gray-300 text-center capitalize ${column.className || ""}`}
+               >
+                 {column.render
+                   ? column.render(row[column.key], row)
+                   : renderCellValue(row[column.key])}
+               </td>
+               
                 ))}
               </tr>
             ))}
