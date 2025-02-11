@@ -36,3 +36,7 @@ export const totalKitchen = [
   {label: '2 Kitchens', value: "2"},
   {label: '3 Kitchens', value: "3"},
 ]
+export const totaluserRole = [
+  {label: 'Admin', value: "Admin"},
+  {label: 'Guest', value: "Guest"},
+]

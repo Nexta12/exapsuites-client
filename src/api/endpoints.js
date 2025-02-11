@@ -11,9 +11,13 @@ export const endpoints = {
     BookingConfirmation: 'api/booking/confirmation',
     makePayment: '/api/booking/bookingPayment',
     ConfirmPayment: '/api/booking/callback',
+    UpdateBookingDetails: '/api/booking/update',
     SendContactMessage: '/api/contact/create',
     getAllMessages: '/api/contact/getAll',
     getSingleMessage: '/api/contact/getOne',
     deleteMessage: '/api/contact/delete',
+    getAllUsers: '/api/user/getAll',
+    CreateUser: '/api/user/create',
+    deleteUser: '/api/user/delete'
   };
   

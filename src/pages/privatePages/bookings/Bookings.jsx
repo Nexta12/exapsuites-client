@@ -64,17 +64,16 @@ const Bookings = () => {
 
   const columns = [
     // { key: "reference", header: "Reference" },
-
     {
       key: "reference",
       header: "Reference",
       render: (value, row) => (
         <Link
-          to={`${paths.Bookings}/${row._id}`}
-          className={`hover:underline block max-w-[200px] truncate text-blue-600 `}
+          to={`${row.totalBalance > 0 ? `${paths.Bookings}/confirmation/${row._id}` : `${paths.Bookings}/${row._id}`}`}
+          className="hover:underline block max-w-[200px] truncate text-blue-600"
           title={value} // Shows full text on hover
         >
-          {value.length > 50 ? `${value.slice(0, 50)}...` : value}
+          {value}
         </Link>
       ),
     },
@@ -83,6 +82,7 @@ const Bookings = () => {
       key: "apartmentId.title",
       header: "Apartment",
       render: (_, row) => getNestedValue(row, "apartmentId.title"),
+      className: 'capitalize'
     },
     {
       key: "contactInfo.fullName",
@@ -108,6 +108,44 @@ const Bookings = () => {
       },
     },
     {
+      key: "totalPayment",
+      header: "Amount Paid (₦)",
+      render: (value) => {
+        return new Intl.NumberFormat("en-US").format(value);
+      },
+    },
+    {
+      key: "totalBalance",
+      header: "Balance (₦)",
+      render: (value) => {
+        if (typeof value === "number") {
+          // Determine the styles based on the value
+          let bgClass = "";
+          let textClass = "";
+    
+          if (value > 0) {
+            bgClass = "bg-red-100";
+            textClass = "text-red-800 capitalize text-[12px]";
+          } else {
+            // Fallback for unexpected values
+            bgClass = "bg-gray-100";
+            textClass = "text-gray-800 whitespace-nowrap capitalize";
+          }
+    
+          return (
+            <span
+              className={`px-2 py-1 rounded text-sm font-medium ${bgClass} ${textClass}`}
+            >
+              {new Intl.NumberFormat("en-US").format(value)} 
+            </span>
+          );
+        }
+    
+        // Return a fallback or null if the value is not a number
+        return 0; // or return some default JSX if needed
+      },
+    },
+    {
       key: "paymentStatus",
       header: "Payment Status",
       render: (value) => {
@@ -127,13 +165,19 @@ const Bookings = () => {
               break;
             case "paid":
               value = "Successful";
-              bgClass = "bg-accent";
+              bgClass = "bg-green-500";
+              textClass = "text-white capitalize text-[12px] ";
+              break;
+            case "part payment":
+              value = "Incomplete";
+              bgClass = "bg-blue-500";
               textClass = "text-white capitalize text-[12px] ";
               break;
             default:
               // Fallback for unexpected values
               bgClass = "bg-gray-100";
-              textClass = "text-gray-800";
+              textClass = "text-gray-800 whitespace-nowrap capitalize ";
+            
           }
 
           return (
@@ -210,7 +254,7 @@ const Bookings = () => {
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
               <Link to={`${paths.Bookings}/${row._id}`}>View</Link>
-              <Link to={`#`}>Update</Link>
+              <Link   to={`${row.totalBalance > 0 ? `${paths.Bookings}/confirmation/${row._id}` : `${paths.Bookings}/update/${row._id}`}`}>Update</Link>
               <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"
@@ -280,7 +324,7 @@ const Bookings = () => {
         <h1 className="text-primary tracking-[1px]">All Bookings</h1>
         <div className="">
           <Link
-            to={paths.AddApartment}
+            to={`${paths.Bookings}/add`}
             className="btn btn-primary py-2 rounded-sm"
           >
             Add New

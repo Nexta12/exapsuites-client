@@ -27,4 +27,31 @@ export const scrollUP = () => {
     return path.split('.').reduce((acc, key) => acc && acc[key] ? acc[key] : '', obj);
   };
 
+
+  export const calculateTotalPrice = (startDate, endDate, costPerNight) => {
+    // Check if required inputs are provided
+    if (!startDate || !endDate || !costPerNight) return 0;
+  
+    // Parse the dates to ensure they are valid Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    // Check if the parsed dates are valid
+    if (isNaN(start.getTime())) throw new Error("Invalid Check In date");
+    if (isNaN(end.getTime())) throw new Error("Invalid Check out date");
+  
+    // Ensure end date is greater than start date
+    if (end <= start) {
+      throw new Error("Check Out Date must be in the future");
+    }
+  
+    // Calculate the number of nights
+    const millisecondsPerDay = 1000 * 60 * 60 * 24;
+    const numberOfNights = Math.ceil((end - start) / millisecondsPerDay);
+  
+    // Calculate the total price
+    return numberOfNights * costPerNight;
+  };
+
+
   

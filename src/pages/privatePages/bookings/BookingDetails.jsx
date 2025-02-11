@@ -48,11 +48,10 @@ const BookingDetails = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className="pb-16" >
+    <div className="pb-16">
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
 
-     
       <div className="mt-5 mb-8 w-full flex items-center justify-between">
         <FaArrowLeftLong
           onClick={() => handleGoBack()}
@@ -61,7 +60,7 @@ const BookingDetails = () => {
 
         <div className="">
           <Link
-            to={`#`}
+            to={`${paths.Bookings}/update/${bookingDetails._id}`}
             className="btn btn-primary py-2 rounded-sm whitespace-nowrap"
           >
             Update Booking
@@ -70,11 +69,7 @@ const BookingDetails = () => {
         {/* Table */}
       </div>
 
-
-
-
-
-      <div className="bg-white w-full md:w-[80%] lg:w-[60%] mx-auto p-4 lg:p-10 border border-gray-300 ">
+      <div className="bg-white w-full md:w-[80%]  mx-auto p-4 lg:p-10 border border-gray-300 ">
         <div className="">
           <div className="w-full mt-4 mb-4 border-b border-gray flex items-center justify-between">
             <div className="flex-1">
@@ -194,9 +189,23 @@ const BookingDetails = () => {
                 Status:
               </h3>
             </div>
-            <div className="flex-[2] text-end ">
-              <p className="text-md whitespace-nowrap">
-                {bookingDetails.status}{" "}
+            <div className="flex-[2] text-end flex justify-end">
+              <p
+                className={`text-md whitespace-nowrap text-white p-2 ${
+                  bookingDetails.status === "pending"
+                    ? "bg-yellow-500"
+                    : bookingDetails.status === "confirmed"
+                    ? "bg-green-500"
+                    : bookingDetails.status === "canceled"
+                    ? "bg-red-500"
+                    : bookingDetails.status === "completed"
+                    ? "bg-blue-500"
+                    : "bg-gray-500" // Fallback for unknown statuses
+                }`}
+              >
+                {bookingDetails.status === "completed"
+                  ? "Active"
+                  : bookingDetails.status}
               </p>
             </div>
           </div>

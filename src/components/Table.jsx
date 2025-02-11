@@ -177,7 +177,7 @@ const Table = ({
                 {columns.map((column) => (
                  <td
                  key={`${keyExtractor(row)}-${String(column.key)}`}
-                 className={`p-4 text-sm text-gray-600 border border-gray-300 text-center capitalize ${column.className || ""}`}
+                 className={`p-4 text-sm text-gray-600 border border-gray-300 text-center ${column.className || ""}`}
                >
                  {column.render
                    ? column.render(row[column.key], row)

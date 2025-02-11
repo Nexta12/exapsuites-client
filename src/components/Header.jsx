@@ -21,7 +21,7 @@ const Header = () => {
 
   useEffect(()=>{
     window.addEventListener('scroll', ()=>{
-      window.scrollY > 50 ? setHeader(true) : setHeader(false)
+      window.scrollY > 0 ? setHeader(true) : setHeader(false)
     })
   },[])
 
