@@ -1,10 +1,12 @@
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
 import EnhancedInput from "@components/EnhancedInput";
+import EnhancedSelect from "@components/EnhancedSelect";
 import Spinner from "@components/Spinner";
 import AlertMessage from "@pages/errorPages/AlertMessage";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
+import { genderData } from "@utils/data";
 import { DateFormatter } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -21,6 +23,7 @@ const BookingConfirmation = () => {
   const [confirmationData, setConfirmationData] = useState({
     firstName: "",
     lastName: "",
+    gender: "",
     email: "",
     phone: "",
   });
@@ -59,6 +62,7 @@ const BookingConfirmation = () => {
     const confirmationDetails = {
       firstName: confirmationData.firstName,
       lastName: confirmationData.lastName,
+      gender: confirmationData.gender,
       email: confirmationData.email,
       phone: confirmationData.phone,
     };
@@ -73,6 +77,7 @@ const BookingConfirmation = () => {
       setConfirmationData({
         firstName: "",
         lastName: "",
+        gender: "",
         email: "",
         phone: "",
       });
@@ -89,6 +94,10 @@ const BookingConfirmation = () => {
     }
   };
 
+  const handleBookingCancellation = () =>{
+   return alert('Booking Cancelled')
+  }
+
   return (
     <section className="">
          {/* Render ErrorAlert if there's an error */}
@@ -98,7 +107,7 @@ const BookingConfirmation = () => {
         <div className="absolute w-full h-full bg-black/50"></div>
         {/* Title */}
 
-        <div className=" absolute top-1/4  z-20 w-[95%] lg:w-[70%] h-[450px] overflow-y-auto bg-white p-5 rounded-md shadow-2xl ">
+        <div className=" absolute top-1/4  z-20 w-[95%] lg:w-[70%] h-[455px] overflow-y-auto bg-white p-5 rounded-md shadow-2xl ">
           <h3 className="h3 flex items-center gap-x-2 justify-center capitalize tracking-wider text-yellow-600 mb-6 ">
             Reservation Confirmation
           </h3>
@@ -177,6 +186,16 @@ const BookingConfirmation = () => {
                   onChange={handleInputChange}
                   required
                 />
+                   <div className="flex-1 w-full mb-3">
+                  <EnhancedSelect
+                    name="gender"
+                    id="gender"
+                    placeholder="Gender Info*"
+                    options={genderData}
+                    value={confirmationData.gender}
+                    onChange={handleInputChange}
+                  />
+                  </div>
                 <EnhancedInput
                   placeholder="Email"
                   type="email"
@@ -194,7 +213,7 @@ const BookingConfirmation = () => {
                 />
 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 my-4 ">
-                  <button className=" whitespace-nowrap  btn btn-secondary flex-1 py-2 w-full ">
+                  <button onClick={handleBookingCancellation} className=" whitespace-nowrap  btn btn-secondary flex-1 py-2 w-full ">
                     Cancel Booking
                   </button>
                   <button

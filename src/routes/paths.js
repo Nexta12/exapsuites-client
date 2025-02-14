@@ -16,6 +16,7 @@ export const paths = {
     ApartmentManager: '/admin/apartments',
     AddApartment: '/admin/apartments/add',
     EditApartment: '/admin/apartments/edit',
+    Expenses: '/admin/expenses'
 
   };
   

@@ -70,6 +70,7 @@ const Messages = () => {
   const columns = [
     { key: 'fullName', header: 'Sender', },
     { key: 'email', header: 'Email',  },
+    { key: 'phone', header: 'Phone',  },
     { 
       key: "message", 
       header: "Message",

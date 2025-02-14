@@ -1,5 +1,3 @@
-
-
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
 import DeleteModal from "@components/DeleteModal";
@@ -7,12 +5,12 @@ import Table from "@components/Table";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import { getNestedValue } from "@utils/helpers";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
-import userAvarter from '@assets/img/avater.png'
 
-const AdminStaff = () => {
+const AllExpenses = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [visiblePopup, setVisiblePopup] = useState(null);
@@ -30,7 +28,7 @@ const AdminStaff = () => {
     if (itemToDelete) {
       try {
         // Make an API call to delete the item
-        await apiClient.delete(`${endpoints.deleteUser}/${itemToDelete}`);
+        await apiClient.delete(`${endpoints.deleteExpense}/${itemToDelete}`);
 
         // Remove the item from the list
         setData((prev) => prev.filter((user) => user._id !== itemToDelete));
@@ -66,61 +64,26 @@ const AdminStaff = () => {
 
   const columns = [
     {
-      key: "fullName",
-      header: "Full Name",
-      className: 'capitalize',
-      render: (_, row) => (
-        <div className="flex items-center space-x-2">
-          <img 
-            src={row.profilPic || userAvarter  } 
-            alt={`${row.firstName} ${row.lastName}`} 
-            className="w-8 h-8 rounded-full object-cover" 
-          />
-          <Link 
-            to={`${paths.Users}/${row._id}`} 
-            className="hover:underline block max-w-[200px] truncate text-blue-600"
-          >
-            {row.firstName} {row.lastName}
-          </Link>  
-        </div>
-      )
+      key: "amount",
+      header: "Amount (₦)",
+      render: (value) => {
+        return new Intl.NumberFormat("en-US").format(value);
+      },
     },
- 
-   { key: "email", header: "Email", render: (_, row) => row.email.toLowerCase() },
-   { key: "phone", header: "Phone" },
-   { key: "role", header: "Role",  
-     render: (value) => {
-    if (typeof value === "string") {
 
-      let bgClass = "";
-      let textClass = "";
-      switch (value) {
-        case "Admin":
-          bgClass = "bg-green-100";
-          textClass = "text-green-800 capitalize text-[12px] ";
-          break;
-        case "Guest":
-          bgClass = "bg-yellow-100";
-          textClass = "text-yellow-800 capitalize text-[12px] ";
-          break;
-        default:
-          // Fallback for unexpected values
-          bgClass = "bg-gray-100";
-          textClass = "text-gray-800";
-      }
-
-      return (
-        <span
-          className={`px-2 py-1 rounded text-sm font-medium ${bgClass} ${textClass}`}
-        >
-          {value}
-        </span>
-      );
-    }
-
-    // Fallback for unexpected types
-    return null;
-  }, },
+    {
+      key: "purpose",
+      header: "Purpose",
+    },
+    {
+      key: "contactInfo.fullName",
+      header: "Recorded By",
+      render: (_, row) =>
+        `${getNestedValue(row, "staff.firstName")} ${
+          getNestedValue(row, "staff.lastName")
+        }`,
+    },
+    { key: 'createdAt', header: 'Date' },
     {
       key: "actions",
       header: "Actions",
@@ -136,8 +99,7 @@ const AdminStaff = () => {
               ref={popupRef}
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
-              <Link to={`${paths.Users}/${row._id}`}>View</Link>
-              <Link to={`${paths.Users}/edit/${row._id}`}>Update</Link>
+              <Link to={`${paths.Expenses}/update/${row._id}`} >Update</Link>
               <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"
@@ -169,7 +131,7 @@ const AdminStaff = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await apiClient.get(`${endpoints.getAllUsers}`);
+        const response = await apiClient.get(endpoints.getAllExpenses);
         setData(response.data);
         setError(null);
       } catch {
@@ -199,15 +161,15 @@ const AdminStaff = () => {
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
 
-      <div className="my-4 w-full flex items-center justify-between">
+      <div className="mt-5 mb-8 w-full flex items-center justify-between">
         <FaArrowLeftLong
           onClick={() => handleGoBack()}
           className="cursor-pointer text-2xl text-dark lg:hidden"
         />
-        <h1 className="text-primary tracking-[1px]">All Users ({data.length}) </h1>
+        <h1 className="text-primary tracking-[1px]">All Expenses</h1>
         <div className="">
           <Link
-            to={`${paths.Users}/add`}
+            to={`${paths.Expenses}/add`}
             className="btn btn-primary py-2 rounded-sm"
           >
             Add New
@@ -228,4 +190,4 @@ const AdminStaff = () => {
   );
 };
 
-export default AdminStaff;
+export default AllExpenses;

@@ -88,7 +88,7 @@ const ApartmentManager = () => {
     { key: 'totalBeds', header: 'Beds', className: "hidden lg:table-cell" },
     { 
       key: 'price', 
-      header: 'Price (₦)', 
+      header: 'Price /Night (₦)', 
       render: (value) => {
         return new Intl.NumberFormat('en-US').format(value);
       } 
@@ -104,19 +104,19 @@ const ApartmentManager = () => {
           switch (value) {
             case "free":
               bgClass = "bg-green-100";
-              textClass = "text-green-800 uppercase text-[12px] ";
+              textClass = "text-green-800 capitalize text-[12px] ";
               break;
             case "reserved":
               bgClass = "bg-yellow-100";
-              textClass = "text-yellow-800 uppercase text-[12px] ";
+              textClass = "text-yellow-800 capitalize text-[12px] ";
               break;
             case "occupied":
               bgClass = "bg-red-100";
-              textClass = "text-red-800 uppercase text-[12px] ";
+              textClass = "text-red-800 capitalize text-[12px] ";
               break;
             case "confirmed":
               bgClass = "bg-blue-100";
-              textClass = "text-blue-800 uppercase text-[12px] ";
+              textClass = "text-blue-800 capitalize text-[12px] ";
               break;
             default:
               // Fallback for unexpected values

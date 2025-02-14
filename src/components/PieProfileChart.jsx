@@ -1,10 +1,9 @@
+import { apiClient } from "@api/apiClient";
+import { endpoints } from "@api/endpoints";
+import ErrorAlert from "@pages/errorPages/errorAlert";
+import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
+import { useEffect, useState } from "react";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts"
-
-const data = [
-    {name: 'Male', value: 540},
-    {name: 'Female', value: 420},
-    {name: 'Undisclosed', value: 200},
-]
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -23,9 +22,28 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 
 const PieProfileChart = () => {
+
+   const [data, setData] = useState([]);
+   const [error, setError] = useState(null);
+
+     useEffect(() => {
+       const fetchData = async () => {
+         try {
+           const response = await apiClient.get(endpoints.getProfilePieChart);
+           setData(response.data);
+           setError(null)
+         } catch (error) {
+           setError(ErrorFormatter(error));
+         }
+       };
+       fetchData();
+
+     }, []);
+
   return (
       <div className=" w-full lg:w-[20rem] h-[22rem] bg-white p-4 rounded-sm border border-gray-200 flex flex-col  ">
-        <strong className="text-gray-700 font-medium" >Buyer Profile</strong>
+           {error && <ErrorAlert message={error} />}
+        <strong className="text-gray-700 font-medium" >Guest &apos;s Profile</strong>
         <div className="w-full mt-3 flex-1 text-sm ">
             <ResponsiveContainer width='100%' height='100%' >
                 <PieChart width={400} height={300} >

@@ -97,7 +97,8 @@ const useAuthStore = create((set, get) => ({
   validateAuth: async () => {
     const token = getLocalStorageItem("accessToken");
     if (!token) {
-       await apiClient.get(endpoints.logout)
+      
+     await apiClient.post(endpoints.logout)
       set({ isAuthenticated: false });
       return;
     }

@@ -40,3 +40,8 @@ export const totaluserRole = [
   {label: 'Admin', value: "Admin"},
   {label: 'Guest', value: "Guest"},
 ]
+export const genderData = [
+  {label: 'Male', value: "male"},
+  {label: 'Female', value: "female"},
+  {label: 'Undisclosed', value: "undisclosed"},
+]

@@ -24,6 +24,11 @@ import AddUser from "@pages/privatePages/users/addUser";
 import UpdateBooking from "@pages/privatePages/bookings/UpdateBooking";
 import AddBooking from "@pages/privatePages/bookings/AddBooking";
 import ConfirmInternalBooking from "@pages/privatePages/bookings/ConfirmInternalBooking";
+import AllExpenses from "@pages/privatePages/expenses/AllExpenses";
+import AddnewExpenditure from "@pages/privatePages/expenses/AddnewExpenditure";
+import UpdateExpense from "@pages/privatePages/expenses/UpdateExpense";
+import UserProfile from "@pages/privatePages/users/UserProfile";
+import EditProfile from "@pages/privatePages/users/EditProfile";
 
 
 const AppRoutes = () => (
@@ -51,12 +56,17 @@ const AppRoutes = () => (
       <Route path={`${paths.Bookings}/confirmation/:id`} element={<ConfirmInternalBooking />} />
       <Route path={`${paths.Bookings}/update/:id`} element={<UpdateBooking />} />
       <Route path={paths.Messages} element={<Messages />} />
+      <Route path={paths.Expenses} element={<AllExpenses />} />
+      <Route path={`${paths.Expenses}/add`} element={<AddnewExpenditure/>} />
+      <Route path={`${paths.Expenses}/update/:id`} element={<UpdateExpense/>} />
       <Route
         path={`${paths.Messages}/:id`}
         element={<SingleContactMessage />}
       />
       <Route path={paths.Users} element={<AdminStaff />} />
       <Route path={`${paths.Users}/add`} element={<AddUser/>} />
+      <Route path={`${paths.Users}/:id`} element={<UserProfile/>} />
+      <Route path={`${paths.Users}/edit/:id`} element={<EditProfile/>} />
       <Route path={paths.ApartmentManager} element={<ApartmentManager />} />
       <Route path={paths.AddApartment} element={<AddApartment />} />
       <Route path={`${paths.EditApartment}/:id`} element={<EditApartment />} />

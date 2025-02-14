@@ -10,6 +10,7 @@ import { RoomContext } from "@context/RoomContext";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import { genderData } from "@utils/data";
 import { calculateTotalPrice, scrollUP } from "@utils/helpers";
 import { useContext, useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -33,6 +34,7 @@ const AddBooking = () => {
     lastName: "",
     email: "",
     phone: "",
+    gender: "",
     apartmentId: "",
     startDate: "",
     endDate: "",
@@ -129,6 +131,7 @@ const AddBooking = () => {
     const bookingDetails = {
       firstName: bookingData.firstName,
       lastName: bookingData.lastName,
+      gender: bookingData.gender,
       email: bookingData.email,
       phone: bookingData.phone,
       apartmentId: bookingData.apartmentId,
@@ -244,6 +247,7 @@ const AddBooking = () => {
                 />
               </div>
               <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+                <div className="flex-1 w-full !text-md">
                 <EnhancedInput
                   name="email"
                   id="email"
@@ -251,10 +255,28 @@ const AddBooking = () => {
                   onChange={handleInputChange}
                   value={bookingData.email}
                 />
+                </div>
+                 <div className="flex-1 w-full !text-md -mt-4">
+                  <EnhancedSelect
+                    name="gender"
+                    id="gender"
+                    placeholder="Gender Info*"
+                    options={genderData}
+                    value={bookingData.gender}
+                    onChange={handleInputChange}
+                  />
+                  </div>
               </div>
             </div>
           </div>
         </div>
+             {/* Display total cost and total nights */}
+             {totalCost !== 0 && (
+            <div className="my-5 flex items-center justify-between gap-4 flex-wrap">
+            <h3 className="text-lg font-semibold">Duration: {totalNight} days</h3>
+            <h3 className="text-lg font-semibold">Total Cost: ₦ {totalCost.toLocaleString()}</h3>
+          </div>
+        )}
         <div className="w-full mt-5">
           <button
             type="submit"
@@ -263,13 +285,7 @@ const AddBooking = () => {
             {isLoading ? "Please wait..." : "Create Booking"}
           </button>
         </div>
-        {/* Display total cost and total nights */}
-        {totalCost !== 0 && (
-            <div className="my-5 flex items-center justify-between gap-4 flex-wrap">
-            <h3 className="text-lg font-semibold">Duration: {totalNight} days</h3>
-            <h3 className="text-lg font-semibold">Total Cost: ₦ {totalCost.toLocaleString()}</h3>
-          </div>
-        )}
+   
       
       </form>
     </div>

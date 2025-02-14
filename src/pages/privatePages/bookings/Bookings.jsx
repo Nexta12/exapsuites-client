@@ -5,6 +5,8 @@ import Table from "@components/Table";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
+import { UserRole } from "@utils/constants";
 import { getNestedValue } from "@utils/helpers";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
@@ -12,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Bookings = () => {
   const [data, setData] = useState([]);
+  const { user } = useAuthStore()
   const [error, setError] = useState(null);
   const [visiblePopup, setVisiblePopup] = useState(null);
   const popupRef = useRef(null);
@@ -28,8 +31,7 @@ const Bookings = () => {
     if (itemToDelete) {
       try {
         // Make an API call to delete the item
-        await apiClient.delete(`#`);
-
+        await apiClient.delete(`${endpoints.deleteBooking}/${itemToDelete}`);
         // Remove the item from the list
         setData((prev) => prev.filter((user) => user._id !== itemToDelete));
 
@@ -87,6 +89,7 @@ const Bookings = () => {
     {
       key: "contactInfo.fullName",
       header: "Guest",
+      className: 'capitalize',
       render: (_, row) =>
         `${getNestedValue(row, "contactInfo.firstName")} ${
           getNestedValue(row, "contactInfo.lastName") || "Processing..."
@@ -255,12 +258,13 @@ const Bookings = () => {
             >
               <Link to={`${paths.Bookings}/${row._id}`}>View</Link>
               <Link   to={`${row.totalBalance > 0 ? `${paths.Bookings}/confirmation/${row._id}` : `${paths.Bookings}/update/${row._id}`}`}>Update</Link>
-              <button
+              { user.role === UserRole.superAdmin && ( <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"
               >
                 Delete
-              </button>
+              </button>) }
+             
             </div>
           )}
         </div>
@@ -306,7 +310,7 @@ const Bookings = () => {
   };
 
   return (
-    <div>
+    <div className="pb-24">
       <DeleteModal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}

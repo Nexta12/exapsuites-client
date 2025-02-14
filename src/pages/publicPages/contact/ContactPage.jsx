@@ -12,6 +12,7 @@ import { MdEmail } from "react-icons/md";
 const ContactPage = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [contactMessage, setContactMessage] = useState("");
   const [message, setMessage] = useState({
     errorMessage: "",
@@ -27,6 +28,7 @@ const ContactPage = () => {
       const messageInfo = {
         fullName,
         email,
+        phone,
         message: contactMessage,
       };
 
@@ -39,6 +41,7 @@ const ContactPage = () => {
 
       setFullName('');
       setEmail('');
+      setPhone('');
       setContactMessage('')
 
       // Send Email to sender and Admin
@@ -102,22 +105,29 @@ const ContactPage = () => {
               <h3 className="h3">Drop A Note </h3>
               <form action="#" onSubmit={handleSubmit}>
                 <InputField
-                  placeholder="Your Name"
+                  placeholder="Your Name*"
                   value={fullName}
                   name="fullName"
                   onChange={(e) => setFullName(e.target.value)}
                   required
                 />
                 <InputField
-                  placeholder="Your Email"
+                  placeholder="Your Email*"
                   type="email"
                   value={email}
                   name="email"
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+                <InputField
+                  placeholder="Phone*"
+                  value={phone}
+                  name="phone"
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
                 <Textarea
-                  placeholder="Your Message"
+                  placeholder="Your Message*"
                   value={contactMessage}
                   name="contactMessage"
                   onChange={(e) => setContactMessage(e.target.value)}

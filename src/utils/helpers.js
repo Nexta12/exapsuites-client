@@ -8,6 +8,9 @@ export const scrollUP = () => {
   export const extractNumber = (str) => parseInt(str.match(/\d+/)?.[0] || "0", 10);
 
   export const DateFormatter = (dateString) => {
+    if (!dateString || isNaN(new Date(dateString).getTime())) {
+      return '-'; // Return '-' for invalid or null dates
+    }
     const date = new Date(dateString);
     const day = date.getDate();
     const suffix = ["th", "st", "nd", "rd"][

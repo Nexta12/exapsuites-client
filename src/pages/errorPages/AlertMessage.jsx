@@ -18,7 +18,7 @@ const AlertMessage = ({ alert }) => {
       className={`flex items-center p-3 mb-3 rounded-lg border shadow-md text-center
       ${alert.errorMessage ? "bg-red-100 border-red-500 text-red-700" : "bg-green-100 border-green-500 text-green-700"}`}
     >
-      <span>{alert.errorMessage || alert.successMessage}</span>
+      <span >{alert.errorMessage || alert.successMessage}</span>
       <button
         className="ml-auto px-2 py-1 text-gray-700 hover:text-gray-900"
         onClick={() => setVisible(false)}
