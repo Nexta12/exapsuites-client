@@ -12,7 +12,7 @@ const Rooms = ({ limit, smallTitle, bigTitle }) => {
   // const roomsToDisplay = limit ? rooms.filter(room => room.bookingStatus === 'free').slice(0, limit) : rooms;
 
   const roomsToDisplay = Array.isArray(rooms) 
-  ? (limit ? rooms.filter(room => room.bookingStatus === 'free').slice(0, limit) : rooms) 
+  ? (limit ? rooms.slice(0, limit) : rooms) 
   : [];
 
 

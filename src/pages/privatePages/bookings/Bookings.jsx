@@ -311,6 +311,10 @@ const Bookings = () => {
 
   return (
     <div className="pb-24">
+        <FaArrowLeftLong
+          onClick={() => handleGoBack()}
+          className="cursor-pointer text-2xl text-neutral-400 lg:hidden"
+        />
       <DeleteModal
         isOpen={openModal}
         onClose={() => setOpenModal(false)}
@@ -320,11 +324,8 @@ const Bookings = () => {
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
 
-      <div className="mt-5 mb-8 w-full flex items-center justify-between">
-        <FaArrowLeftLong
-          onClick={() => handleGoBack()}
-          className="cursor-pointer text-2xl text-dark lg:hidden"
-        />
+      <div className="my-4 w-full flex items-center justify-between">
+      
         <h1 className="text-primary tracking-[1px]">All Bookings</h1>
         <div className="">
           <Link

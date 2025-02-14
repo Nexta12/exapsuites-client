@@ -10,7 +10,7 @@ import "slick-carousel/slick/slick-theme.css";
 // context
 
 import { RoomContext } from "@context/RoomContext";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import Spinner from "@components/Spinner";
@@ -94,9 +94,8 @@ const RoomDetails = () => {
         bookingData
       );
 
-      // redirect to Booking Confrimation Page. 
-      navigate(`${paths.BookingConfirmation}/${response.data._id}`)
-
+      // redirect to Booking Confrimation Page.
+      navigate(`${paths.BookingConfirmation}/${response.data._id}`);
     } catch (error) {
       setMessage({
         errorMessage: ErrorFormatter(error),
@@ -117,7 +116,7 @@ const RoomDetails = () => {
         <div className="absolute w-full h-full bg-black/50"></div>
         {/* Title */}
         <h1 className="text-6xl text-white z-20 font-primary text-center capitalize ">
-          {roomDetails.title} Details{" "}
+          {roomDetails.title}
         </h1>
       </div>
 
@@ -186,14 +185,25 @@ const RoomDetails = () => {
                     <KidsDropdown />
                   </div>
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-lg btn-primary w-full "
-                >
-                  {loading
-                    ? "Please Wait..."
-                    : `Book Now for ₦${roomDetails.price.toLocaleString()}`}
-                </button>
+
+                {roomDetails.bookingStatus !== "free" ? (
+                  <Link
+                    to={`#`}
+                    className="btn btn-lg btn-primary w-full "
+                    aria-disabled
+                  >
+                    Unavailable
+                  </Link>
+                ) : (
+                  <button
+                    type="submit"
+                    className="btn btn-lg btn-primary w-full "
+                  >
+                    {loading
+                      ? "Please Wait..."
+                      : `Book Now for ₦${roomDetails.price.toLocaleString()}`}
+                  </button>
+                )}
               </div>
             </form>
             {/* Rules */}

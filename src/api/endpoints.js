@@ -11,6 +11,7 @@ export const endpoints = {
     getSingleBooking: '/api/booking/getOne',
     deleteBooking: '/api/booking/delete',
     BookingConfirmation: 'api/booking/confirmation',
+    BookingCancellation: 'api/booking/cancellation',
     makePayment: '/api/booking/bookingPayment',
     ConfirmPayment: '/api/booking/callback',
     UpdateBookingDetails: '/api/booking/update',
@@ -32,5 +33,8 @@ export const endpoints = {
     getSingleExpense: '/api/expense/getOne',
     updateExpenses: '/api/expense/update',
     deleteExpense: '/api/expense/delete',
+    getAllNotifications: '/api/notification/getAll',
+    updateNotifications: '/api/notification/update',
+    deleteNotifications: '/api/notification/delete',
   };
   

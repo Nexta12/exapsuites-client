@@ -141,6 +141,10 @@ const EditProfile = () => {
 
   return (
     <div className="mt-5 w-full md:w-[80%] lg:w-[70%] mx-auto ">
+       <FaArrowLeftLong
+                onClick={() => handleGoBack()}
+                className="cursor-pointer text-2xl text-neutral-400 mb-2"
+              />
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
       <form action="" method="post" className="mb-10" onSubmit={handleSubmit}>

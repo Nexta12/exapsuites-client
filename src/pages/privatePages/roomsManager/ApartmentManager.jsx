@@ -111,8 +111,8 @@ const ApartmentManager = () => {
               textClass = "text-yellow-800 capitalize text-[12px] ";
               break;
             case "occupied":
-              bgClass = "bg-red-100";
-              textClass = "text-red-800 capitalize text-[12px] ";
+              bgClass = "bg-yellow-100";
+              textClass = "text-yellow-800 capitalize text-[12px] ";
               break;
             case "confirmed":
               bgClass = "bg-blue-100";

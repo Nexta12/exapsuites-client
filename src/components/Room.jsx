@@ -2,14 +2,15 @@
 import { paths } from "@routes/paths";
 import {BsArrowsFullscreen, BsPeople } from "react-icons/bs"
 import { Link } from "react-router-dom";
+import dummyImage from "@assets/img/rooms/3.png"
 const Room = ({room}) => {
 
-  const { _id, totalBeds, maxPeople, title, description, price } = room
+  const { _id, totalBeds, maxPeople, title, description, price, bookingStatus } = room
   return <div className="bg-white shadow-2xl min-h-[520px] group ">
     {/* img */}
     <Link to={`${paths.Apartment}/${_id}`}>
     <div className="overflow-hidden w-full h-[280px] flex items-center justify-center ">
-    <img className="group-hover:scale-110 transition-all duration-300 w-full h-full object-cover" src={room?.images[0]?.url} alt="images" />
+    <img className="group-hover:scale-110 transition-all duration-300 w-full h-full object-cover" src={room?.images[0]?.url || dummyImage } alt="images" />
     </div>
     </Link>
     {/* Details */}
@@ -46,7 +47,12 @@ const Room = ({room}) => {
     </div>
    
     {/* btn */}
-    <Link to={`${paths.Apartment}/${_id}`} className="btn btn-secondary btn-sm max-w-[240px] mx-auto" >Book Now ₦{price.toLocaleString()}</Link>
+    {bookingStatus !== 'free' ? (
+       <Link to={`#`} className="btn btn-primary btn-sm max-w-[240px] mx-auto" aria-disabled >Unavailable</Link>
+    ) : (
+       <Link to={`${paths.Apartment}/${_id}`} className="btn btn-secondary btn-sm max-w-[240px] mx-auto" >Book Now ₦{price.toLocaleString()}</Link>
+    ) }
+   
   </div>;
 };
 

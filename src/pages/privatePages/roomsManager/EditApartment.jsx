@@ -147,16 +147,17 @@ const EditApartment = () => {
 
   return (
     <div className="mt-5 w-full ">
+        <FaArrowLeftLong
+                    onClick={() => handleGoBack()}
+                    className="cursor-pointer text-2xl text-neutral-400 mb-2 lg:hidden"
+                  />
       <form action="" method="post" className="mb-10" onSubmit={handleSubmit}>
         <div className=" w-full  flex flex-col lg:flex-row items-start justify-between gap-4">
           {/* Left Side */}
           
           <div className="Left w-full bg-white border border-gray-200 p-5 flex-[2] ">
             <AlertMessage alert={message} />
-            <FaArrowLeftLong
-                    onClick={() => handleGoBack()}
-                    className="cursor-pointer text-2xl text-dark lg:hidden"
-                  />
+          
             <h3 className=" font-semibold text-center text-accent uppercase mb-3">
               Apartment Information
             </h3>

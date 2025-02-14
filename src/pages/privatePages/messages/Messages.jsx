@@ -141,7 +141,7 @@ const Messages = () => {
               ref={popupRef}
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
-              <Link     to={`${paths.Messages}/${row._id}`}  >View</Link>
+              <Link  to={`${paths.Messages}/${row._id}`}  >View</Link>
               <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"

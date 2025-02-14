@@ -89,6 +89,7 @@ const Login = () => {
             <InputField
               placeholder="Password"
               name='password'
+              type="password"
               value={values.password}
               onChange={handleChange}
               error={error}
@@ -97,9 +98,9 @@ const Login = () => {
               {isLoading ? "Please Wait..." : "Submit"}
             </button>
             <p>
-              Forgotten Password ?{" "}
-              <Link to={paths.ForgotPassword} className="">
-                click here
+              
+              <Link to={paths.ForgotPassword} className="text-white">
+              Forgotten Password ?  click here
               </Link>{" "}
             </p>
           </form>

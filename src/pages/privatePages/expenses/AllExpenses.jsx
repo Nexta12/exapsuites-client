@@ -161,11 +161,11 @@ const AllExpenses = () => {
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
 
-      <div className="mt-5 mb-8 w-full flex items-center justify-between">
-        <FaArrowLeftLong
-          onClick={() => handleGoBack()}
-          className="cursor-pointer text-2xl text-dark lg:hidden"
-        />
+      <div className="my-4 w-full flex items-center justify-between">
+         <FaArrowLeftLong
+                onClick={() => handleGoBack()}
+                className="cursor-pointer text-2xl text-neutral-400 mb-2 lg:hidden "
+              />
         <h1 className="text-primary tracking-[1px]">All Expenses</h1>
         <div className="">
           <Link
