@@ -29,6 +29,8 @@ import AddnewExpenditure from "@pages/privatePages/expenses/AddnewExpenditure";
 import UpdateExpense from "@pages/privatePages/expenses/UpdateExpense";
 import UserProfile from "@pages/privatePages/users/UserProfile";
 import EditProfile from "@pages/privatePages/users/EditProfile";
+import OTP from "@pages/publicPages/forgotPassword/OTP";
+import NewPassword from "@pages/publicPages/forgotPassword/NewPassword";
 
 
 const AppRoutes = () => (
@@ -41,6 +43,8 @@ const AppRoutes = () => (
       <Route path={paths.Contact} element={<ContactPage />} />
       <Route path={paths.Login} element={<Login />} />
       <Route path={paths.ForgotPassword} element={<ForgotPassword />} />
+      <Route path={paths.setNewPassword} element={<NewPassword/>} />
+      <Route path={paths.OTPPage} element={<OTP />} />
       <Route
         path={`${paths.BookingConfirmation}/:id`}
         element={<BookingConfirmation />}

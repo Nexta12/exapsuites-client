@@ -3,7 +3,9 @@ export const paths = {
     Apartment: "/apartments",
     Contact: "/contact",
     Login: "/login",
-    ForgotPassword: '/reset-password',
+    ForgotPassword: '/forgot-password',
+    OTPPage: '/otp-verification',
+    setNewPassword: '/reset-password',
     BookingConfirmation: '/booking/confirmation',
     PaymentCallback: '/booking/callback/',
 

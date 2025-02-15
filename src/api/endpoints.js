@@ -1,6 +1,8 @@
 export const endpoints = {
     login: "api/secure/login",
     logout: "api/secure/logout",
+    ForgetPassword: '/api/secure/forgot-password',
+    verifyOtp: '/api/secure/verify-otp',
     validateAuth: "/api/secure/validate",
     createApartment: '/api/apartment/create',
     getAllApartments: '/api/apartment/getAll',
