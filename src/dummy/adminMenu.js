@@ -41,6 +41,25 @@ export const DashMiddleMenu = [
     },
   
   ];
+
+export const GuestDashenu = [
+    {
+      title: "Dashboard",
+      link: paths.GuestDashboard,
+      icon: MdDashboard,
+    },
+    {
+      title: "Bookings",
+      link: paths.GuestBookings,
+      icon: FaRegAddressCard ,
+    },
+    {
+      title: "Invoices",
+      link: paths.GuestInvoice,
+      icon: BsGraphUpArrow ,
+    },
+   
+  ];
   
    export const DashBottomMenu = [
   

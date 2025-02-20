@@ -11,8 +11,11 @@ import { useEffect, useRef, useState } from "react";
 import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
 import { Link, useNavigate } from "react-router-dom";
 import userAvarter from '@assets/img/avater.png'
+import { UserRole } from "@utils/constants";
+import useAuthStore from "@store/authStore";
 
 const AdminStaff = () => {
+  const { user} = useAuthStore()
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [visiblePopup, setVisiblePopup] = useState(null);
@@ -95,6 +98,10 @@ const AdminStaff = () => {
       let bgClass = "";
       let textClass = "";
       switch (value) {
+        case "Manager":
+          bgClass = "bg-blue-100";
+          textClass = "text-blue-800 capitalize text-[12px] ";
+          break;
         case "Admin":
           bgClass = "bg-green-100";
           textClass = "text-green-800 capitalize text-[12px] ";
@@ -137,6 +144,8 @@ const AdminStaff = () => {
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
               <Link to={`${paths.Users}/${row._id}`}>View</Link>
+              {(user.role === UserRole.superAdmin || user.role === UserRole.manager || user.id === row._id) && (
+                <>
               <Link to={`${paths.Users}/edit/${row._id}`}>Update</Link>
               <button
                 onClick={() => handleDelete(row._id)}
@@ -144,6 +153,8 @@ const AdminStaff = () => {
               >
                 Delete
               </button>
+              </>
+              ) }
             </div>
           )}
         </div>

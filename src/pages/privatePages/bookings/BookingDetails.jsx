@@ -7,7 +7,7 @@ import { paths } from "@routes/paths";
 import { DateFormatter } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const BookingDetails = () => {
   const navigate = useNavigate();
@@ -49,25 +49,12 @@ const BookingDetails = () => {
 
   return (
     <div className="pb-16">
+         <FaArrowLeftLong
+          onClick={() => handleGoBack()}
+          className="cursor-pointer text-neutral-400 lg:hidden"
+        />
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
-
-      <div className="mt-5 mb-8 w-full flex items-center justify-between">
-        <FaArrowLeftLong
-          onClick={() => handleGoBack()}
-          className="cursor-pointer text-2xl text-dark"
-        />
-
-        <div className="">
-          <Link
-            to={`${paths.Bookings}/update/${bookingDetails._id}`}
-            className="btn btn-primary py-2 rounded-sm whitespace-nowrap"
-          >
-            Update Booking
-          </Link>
-        </div>
-        {/* Table */}
-      </div>
 
       <div className="bg-white w-full md:w-[80%]  mx-auto p-4 lg:p-10 border border-gray-300 ">
         <div className="">

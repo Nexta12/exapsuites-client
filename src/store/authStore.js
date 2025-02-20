@@ -1,5 +1,6 @@
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
+import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
 import { UserRole } from "@utils/constants";
 import {
@@ -12,7 +13,7 @@ import { create } from "zustand";
 const localStorageUser = getLocalStorageItem("user");
 
 export const getLoggedInUserPath = (user) => {
-  if (user.role === UserRole.admin || user.role === UserRole.superAdmin) {
+  if (user.role === UserRole.admin || user.role === UserRole.superAdmin || user.role === UserRole.manager ) {
     return paths.AdminDashboard;
   } else if (user.role === UserRole.guest) {
     return paths.GuestDashboard;                 
@@ -43,7 +44,7 @@ const handleLogin = async (loginDetails, navigate, set) => {
   } catch (error) {
     set({
       user: null,
-      error: error?.response?.data?.message || "Internal Server error",
+      error: ErrorFormatter(error) || "Internal Server error",
       isAuthenticated: false,
       isLoading: false,
     });

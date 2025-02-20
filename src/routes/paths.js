@@ -11,14 +11,20 @@ export const paths = {
 
     // Admin
     AdminDashboard: '/admin/dashboard',
-    GuestDashboard: '/guest/dashboard',
     Messages: '/admin/messages',
     Bookings: '/admin/bookings',
     Users: '/admin/users',
     ApartmentManager: '/admin/apartments',
     AddApartment: '/admin/apartments/add',
     EditApartment: '/admin/apartments/edit',
-    Expenses: '/admin/expenses'
+    Expenses: '/admin/expenses',
+
+    // Guest
+    Guest: '/guest',
+    GuestUser: '/guest/user',
+    GuestDashboard: '/guest/dashboard',
+    GuestBookings: '/guest/bookings',
+    GuestInvoice: '/guest/invoices',
 
   };
   

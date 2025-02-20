@@ -3,16 +3,19 @@ import { FaRegEnvelope } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Avater from "@assets/img/avater.png";
 import { MdClose, MdOutlineMenu } from "react-icons/md";
-import { DashBottomMenu, DashMiddleMenu } from "@dummy/adminMenu";
+import { DashBottomMenu, DashMiddleMenu, GuestDashenu } from "@dummy/adminMenu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "@store/authStore";
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
+import Marquee from "react-fast-marquee";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { paths } from "@routes/paths";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BsHouse } from "react-icons/bs";
+import { getGreeting } from "@utils/helpers";
+import { UserRole } from "@utils/constants";
 
 const AdminHeader = () => {
   const { user, logout } = useAuthStore();
@@ -24,11 +27,37 @@ const AdminHeader = () => {
   const [currentUser, setCurrentUser] = useState(user);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const greeting = getGreeting();
   const [contactMessages, setContactMessages] = useState([]);
   const [contactMessagesCount, setContactMessagesCount] = useState(0);
 
   const [notificationData, setNotificationData] = useState([]);
   const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+
+  const [showMarquee, setShowMarquee] = useState(true);
+
+  const [ExpenseDates, setExpenseDatas] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiClient.get(endpoints.getAllExpenses);
+        setExpenseDatas(response.data);
+        setError(null);
+      } catch {
+        setError("An error occurred");
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowMarquee(false);
+    }, 40000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
   let title = pathSegments.pop(); // Get last segment
@@ -194,273 +223,310 @@ const AdminHeader = () => {
       setError(ErrorFormatter(error));
     }
   };
+    
+  // Choose Which Menu to display
+   const DashBoardMenu = user.role !== UserRole.guest ? DashMiddleMenu : GuestDashenu
 
   return (
-    <div className="relative bg-white w-ful py-5 shadow-sm flex items-center justify-between gap-x-4">
-      {error && <ErrorAlert message={error} />}
-      {/* Left */}
-      <div className="flex-1 flex items-center gap-x-3 pl-3 ">
-        <SidebarToggleIcon
-          onClick={handleSidebarToggle}
-          className="text-accent text-2xl lg:hidden"
-        />
-        <h3 className="h3 font-tertiary tracking-[2px] font-light capitalize">
-          {/* Extract the Title of the page from the Pathname */}
-          {title}
-        </h3>
-      </div>
+    <>
+      <div className="relative bg-white w-ful py-5 shadow-sm flex items-center justify-between gap-x-4">
+        {error && <ErrorAlert message={error} />}
+        {/* Left */}
+        <div className="flex-1 flex items-center gap-x-3 pl-3 ">
+          <SidebarToggleIcon
+            onClick={handleSidebarToggle}
+            className="text-accent text-2xl lg:hidden"
+          />
+          <h3 className="h3 font-tertiary tracking-[2px] font-light capitalize">
+            {/* Extract the Title of the page from the Pathname */}
+            {title}
+          </h3>
+        </div>
 
-      {/* Middle */}
-
-      {/* Right */}
-      <div className="flex-1 ">
-        <div className=" flex items-center justify-end  gap-x-6 pr-3 ">
-          {/* Messages Notifcation */}
-          <div ref={messageRef} className="relative messageDropDown ">
-            <div
-              className="relative cursor-pointer"
-              onClick={handleMessageToggle}
-            >
-              <FaRegEnvelope className="text-accent" />
-              {contactMessagesCount != 0 ? (
-                <span className=" absolute top-[-15px] right-[-5px] bg-red-500 w-[20px] h-[20px] flex items-center justify-center rounded-full text-white text-[13px]">
-                  {contactMessagesCount}
-                </span>
-              ) : null}
-            </div>
-
-            <div
-              role="menu"
-              aria-hidden={!messageDropdown}
-              aria-labelledby="messageDropdown-menu-button"
-              className={`${
-                !messageDropdown ? "hidden" : "block"
-              } absolute w-64 p-4 rounded-sm bg-white top-16 z-10 right-[-25px] shadow-2xl `}
-            >
-              {/* Started */}
-
-              <div className="flex flex-col gap-y-3 max-h-[300px] overflow-y-auto  relative">
-                <div className="">
-                  {contactMessages.length > 0 ? (
-                    <>
-                      <div className="bg-white sticky top-0  ">
-                        <h3 className="mb-6 text-secondary text-2xl text-accent text-center ">
-                          Messages{" "}
-                          <span className="text-xs">
-                            ({contactMessages.length})
-                          </span>
-                        </h3>
-                      </div>
-                      {/* contact Msg */}
-
-                      {contactMessages.map((item, index) => (
-                        <div
-                          key={index}
-                          className={`${
-                            item.isRead === false ? "text-blue-400" : ""
-                          } flex items-start justify-between mb-4 cursor-pointer`}
-                        >
-                          <div className="text-left">
-                            <Link
-                              to={`${paths.Messages}/${item._id}`}
-                              onClick={() => setMessagesDropdown(false)}
-                            >
-                              <h3 className="text-[10px] font-semibold">
-                                Message From: {item.fullName}
-                              </h3>
-
-                              <p className="text-sm hover:underline">
-                                {item.message.slice(0, 28)}...
-                              </p>
-                            </Link>
-                          </div>
-                          <AiOutlineDelete
-                            role="button"
-                            onClick={() => handleDeleteMessage(item)}
-                            className="text-red-500 cursor-pointer mr-4 !text-[16px]"
-                            title="Delete"
-                          />
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <span className="text-neutral-400 text-center">
-                      No messages
-                    </span>
-                  )}
-                </div>
+        {/* Middle */}
+        <div className="hidden lg:block text-md font-tertiary tracking-[2px] font-light capitalize  text-accent">
+          {greeting}, {currentUser.firstName} 🎉
+        </div>
+        {/* Right */}
+        <div className="flex-1 ">
+          <div className=" flex items-center justify-end  gap-x-6 pr-3 ">
+            {user.role !== UserRole.guest && ( <>
+            
+           
+            {/* Messages Notifcation */}
+            <div ref={messageRef} className="relative messageDropDown ">
+              <div
+                className="relative cursor-pointer"
+                onClick={handleMessageToggle}
+              >
+                <FaRegEnvelope className="text-accent" />
+                {contactMessagesCount != 0 ? (
+                  <span className=" absolute top-[-15px] right-[-5px] bg-red-500 w-[20px] h-[20px] flex items-center justify-center rounded-full text-white text-[13px]">
+                    {contactMessagesCount}
+                  </span>
+                ) : null}
               </div>
 
-              {/* Stopped */}
-            </div>
-          </div>
+              <div
+                role="menu"
+                aria-hidden={!messageDropdown}
+                aria-labelledby="messageDropdown-menu-button"
+                className={`${
+                  !messageDropdown ? "hidden" : "block"
+                } absolute w-64 p-4 rounded-sm bg-white top-16 z-10 right-[-25px] shadow-2xl `}
+              >
+                {/* Started */}
 
-          {/* General Notification */}
-          <div ref={notificationRef} className="relative  ">
-            <div
-              className="relative cursor-pointer"
-              onClick={handleNotificationToggle}
-            >
-              <IoMdNotificationsOutline className="text-accent text-[23px]" />
+                <div className="flex flex-col gap-y-3 max-h-[300px] overflow-y-auto  relative">
+                  <div className="">
+                    {contactMessages.length > 0 ? (
+                      <>
+                        <div className="bg-white sticky top-0  ">
+                          <h3 className="mb-6 text-secondary text-2xl text-accent text-center ">
+                            Messages{" "}
+                            <span className="text-xs">
+                              ({contactMessages.length})
+                            </span>
+                          </h3>
+                        </div>
+                        {/* contact Msg */}
 
-              {unreadNotificationCount != 0 ? (
-                <span className="absolute top-[-15px] right-[-5px] bg-red-500 w-[20px] h-[20px] flex items-center justify-center rounded-full text-white text-[13px]">
-                  {unreadNotificationCount}
-                </span>
-              ) : null}
-            </div>
-
-            <div
-              role="menu"
-              aria-hidden={!notificationDropdown}
-              aria-labelledby="notificationDropdown-menu-button"
-              className={`${
-                !notificationDropdown ? "hidden" : "block"
-              } absolute w-64 p-4 rounded-sm bg-white top-16 z-10 right-[-25px] shadow-2xl `}
-            >
-              {/* Started */}
-
-              <div className="flex flex-col gap-y-3 max-h-[300px] overflow-y-auto  relative">
-                <div className="">
-                  {notificationData.length > 0 ? (
-                    <>
-                      <div className="bg-white sticky top-0  ">
-                        <h3 className="mb-6 text-secondary text-2xl text-accent text-center ">
-                          Notifications{" "}
-                          <span className="text-xs">
-                            ({notificationData.length})
-                          </span>
-                        </h3>
-                      </div>
-                      {/* Notification Msg */}
-
-                      {notificationData.map((item, index) => (
-                        <div
-                          key={index}
-                          className={`${
-                            item.status === false ? "text-blue-400" : ""
-                          } flex items-start justify-between mb-4 cursor-pointer`}
-                        >
+                        {contactMessages.map((item, index) => (
                           <div
-                            onClick={() => handleReadStatus(item)}
-                            className="text-left"
+                            key={index}
+                            className={`${
+                              item.isRead === false ? "text-blue-400" : ""
+                            } flex items-start justify-between mb-4 cursor-pointer`}
                           >
-                            <h3 className="text-[12px] font-semibold">
-                              {item.title}
-                            </h3>
-                            <p className="text-xs">{item.message}</p>
+                            <div className="text-left">
+                              <Link
+                                to={`${paths.Messages}/${item._id}`}
+                                onClick={() => setMessagesDropdown(false)}
+                              >
+                                <h3 className="text-[10px] font-semibold">
+                                  Message From: {item.fullName}
+                                </h3>
+
+                                <p className="text-sm hover:underline">
+                                  {item.message.slice(0, 28)}...
+                                </p>
+                              </Link>
+                            </div>
+                            <AiOutlineDelete
+                              role="button"
+                              onClick={() => handleDeleteMessage(item)}
+                              className="text-red-500 cursor-pointer mr-4 !text-[16px]"
+                              title="Delete"
+                            />
                           </div>
-                          <AiOutlineDelete
-                            role="button"
-                            onClick={() => handleDeleteNotice(item)}
-                            className="text-red-500 cursor-pointer mr-4 !text-[26px]"
-                            title="Delete"
-                          />
-                        </div>
-                      ))}
-                    </>
-                  ) : (
-                    <span className="text-neutral-400 text-center">
-                      No Notifications
-                    </span>
-                  )}
+                        ))}
+                      </>
+                    ) : (
+                      <span className="text-neutral-400 text-center">
+                        No messages
+                      </span>
+                    )}
+                  </div>
                 </div>
+
+                {/* Stopped */}
+              </div>
+            </div>
+
+            {/* General Notification */}
+            <div ref={notificationRef} className="relative  ">
+              <div
+                className="relative cursor-pointer"
+                onClick={handleNotificationToggle}
+              >
+                <IoMdNotificationsOutline className="text-accent text-[23px]" />
+
+                {unreadNotificationCount != 0 ? (
+                  <span className="absolute top-[-15px] right-[-5px] bg-red-500 w-[20px] h-[20px] flex items-center justify-center rounded-full text-white text-[13px]">
+                    {unreadNotificationCount}
+                  </span>
+                ) : null}
               </div>
 
-              {/* Stopped */}
-            </div>
-          </div>
+              <div
+                role="menu"
+                aria-hidden={!notificationDropdown}
+                aria-labelledby="notificationDropdown-menu-button"
+                className={`${
+                  !notificationDropdown ? "hidden" : "block"
+                } absolute w-64 p-4 rounded-sm bg-white top-16 z-10 right-[-25px] shadow-2xl `}
+              >
+                {/* Started */}
 
-          {/* User Icon */}
-          <div ref={userMenuRef} className="relative  ">
-            <div
-              className="relative cursor-pointer"
-              onClick={handleUserMenuToggle}
-            >
-              <img
-                src={currentUser.profilPic || Avater}
-                alt="user"
-                className="w-[35px] h-[35px] rounded-full object-cover border border-neutral-100 p-[3px] "
-              />
-            </div>
+                <div className="flex flex-col gap-y-3 max-h-[300px] overflow-y-auto  relative">
+                  <div className="">
+                    {notificationData.length > 0 ? (
+                      <>
+                        <div className="bg-white sticky top-0  ">
+                          <h3 className="mb-6 text-secondary text-2xl text-accent text-center ">
+                            Notifications{" "}
+                            <span className="text-xs">
+                              ({notificationData.length})
+                            </span>
+                          </h3>
+                        </div>
+                        {/* Notification Msg */}
 
-            <div
-              role="menu"
-              aria-hidden={!userMenuDropdown}
-              aria-labelledby="userMenuDropdown-menu-button"
-              className={`${
-                !userMenuDropdown ? "hidden" : "block"
-              } absolute w-40 p-4 rounded-sm bg-white top-16 z-10 right-0 shadow-2xl`}
-            >
-              <div className=" p-2 flex flex-col gap-y-4 text-left">
-                <Link className="whitespace-nowrap text-accent hover:underline">
-                  Change Password
-                </Link>
-                <Link
-                  to={`${paths.Users}/${currentUser._id}`}
-                  className=" text-accent hover:underline"
-                >
-                  My Profile
-                </Link>
-                <button
-                  className="btn btn-primary py-2"
-                  onClick={() => logout(navigate)}
-                >
-                  Logout
-                </button>
+                        {notificationData.map((item, index) => (
+                          <div
+                            key={index}
+                            className={`${
+                              item.status === false ? "text-blue-400" : ""
+                            } flex items-start justify-between mb-4 cursor-pointer`}
+                          >
+                            <div
+                              onClick={() => handleReadStatus(item)}
+                              className="text-left"
+                            >
+                              <h3 className="text-[12px] font-semibold">
+                                {item.title}
+                              </h3>
+                              <p className="text-xs">{item.message}</p>
+                            </div>
+                            <AiOutlineDelete
+                              role="button"
+                              onClick={() => handleDeleteNotice(item)}
+                              className="text-red-500 cursor-pointer mr-4 !text-[26px]"
+                              title="Delete"
+                            />
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <span className="text-neutral-400 text-center">
+                        No Notifications
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Stopped */}
+              </div>
+            </div>
+            </>)}
+
+            {/* User Icon */}
+            <div ref={userMenuRef} className="relative  ">
+              <div
+                className="relative cursor-pointer"
+                onClick={handleUserMenuToggle}
+              >
+                <img
+                  src={currentUser.profilPic || Avater}
+                  alt="user"
+                  className="w-[35px] h-[35px] rounded-full object-cover border border-neutral-100 p-[3px] "
+                />
+              </div>
+
+              <div
+                role="menu"
+                aria-hidden={!userMenuDropdown}
+                aria-labelledby="userMenuDropdown-menu-button"
+                className={`${
+                  !userMenuDropdown ? "hidden" : "block"
+                } absolute w-40 p-4 rounded-sm bg-white top-16 z-10 right-0 shadow-2xl`}
+              >
+                <div className=" p-2 flex flex-col gap-y-4 text-left">
+                  <p className="capitalize whitespace-nowrap text-accent">
+                    {" "}
+                    Hi, {currentUser.firstName}{" "}
+                  </p>
+
+                  <Link
+                    onClick={() => setUserMenuDropdown(false)}
+                    to={`${user.role !== UserRole.guest ? paths.Users : paths.GuestUser}/update/password/${currentUser._id}`}
+                    className="whitespace-nowrap text-accent hover:underline"
+                  >
+                    Change Password
+                  </Link>
+
+                  <Link
+                    onClick={() => setUserMenuDropdown(false)}
+                    to={`${user.role !== UserRole.guest ? paths.Users : paths.GuestUser}/${currentUser._id}`}
+                    className=" text-accent hover:underline"
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    className="btn btn-primary py-2"
+                    onClick={() => logout(navigate)}
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Admin Menu Sidebar Mobile */}
-      <div
-        ref={sidebarRef}
-        className={`${
-          !sideBarToggle && "-translate-x-full xl:translate-x-0"
-        } absolute transition-all duration-300  lg:hidden w-screen overflow-hidden top-[82px] z-30 h-[calc(100vh-82px)] bg-white `}
-      >
-        <div className="w-full flex flex-col justify-between h-full">
-          {/* Middle Part */}
-          <div className="flex-2 ">
-            <Link
-              to={paths.Index}
-              className="flex items-center px-3 gap-x-3 mb-2 rounded-sm py-2 group hover:bg-amber-600 transition-all duration-300 ease-in-out"
-            >
-              <span className="text-xl">
-                <BsHouse className="text-yellow-500 group-hover:text-black " />
-              </span>
+        {/* Admin Menu Sidebar Mobile */}
+        <div
+          ref={sidebarRef}
+          className={`${
+            !sideBarToggle && "-translate-x-full xl:translate-x-0"
+          } absolute transition-all duration-300  lg:hidden w-screen overflow-hidden top-[82px] z-30 h-[calc(100vh-82px)] bg-white `}
+        >
+          <div className="w-full flex flex-col justify-between h-full">
+            {/* Middle Part */}
+            <div className="flex-2 ">
+              <Link
+                to={paths.Index}
+                className="flex items-center px-3 gap-x-3 mb-2 rounded-sm py-2 group hover:bg-amber-600 transition-all duration-300 ease-in-out"
+              >
+                <span className="text-xl">
+                  <BsHouse className="text-yellow-500 group-hover:text-black " />
+                </span>
 
-              <span className="">Homepage</span>
-            </Link>
+                <span className="">Homepage</span>
+              </Link>
 
-            {DashMiddleMenu.map((item, index) => {
-              return (
+              {DashBoardMenu.map((item, index) => {
+                return (
+                  <SideBarLink
+                    key={index}
+                    item={item}
+                    handleSidebarToggle={handleSidebarToggle}
+                    pathname={pathname}
+                  />
+                );
+              })}
+            </div>
+            {/*  bottom Part */}
+
+            <div className="border-t border-yellow-900 pt-3">
+              {DashBottomMenu.map((item, index) => (
                 <SideBarLink
                   key={index}
                   item={item}
                   handleSidebarToggle={handleSidebarToggle}
                   pathname={pathname}
                 />
-              );
-            })}
-          </div>
-          {/*  bottom Part */}
-
-          <div className="border-t border-yellow-900 pt-3">
-            {DashBottomMenu.map((item, index) => (
-              <SideBarLink
-                key={index}
-                item={item}
-                handleSidebarToggle={handleSidebarToggle}
-                pathname={pathname}
-              />
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+      {showMarquee && (
+        <Marquee
+          className="p-2 text-center bg-red-400 text-white cursor-pointer"
+          pauseOnHover
+        >
+          <h2 className="">
+            {greeting}, {currentUser.firstName}
+          </h2>
+          {ExpenseDates.some((data) => data.status === "pending" && user.role === UserRole.manager ) && (
+            <>
+              <h2 className="mx-40">You have an unapproved expenditure request </h2>
+            </>
+          )}
+        </Marquee>
+      )}
+    </>
   );
 };
 // Mobile Sidebar

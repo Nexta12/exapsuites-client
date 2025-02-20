@@ -7,7 +7,7 @@ import { UserRole } from "@utils/constants";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
-const AdminLayout = () => {
+const GuestLayout = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, validateAuth } = useAuthStore();
   const [authLoading, setAuthLoading] = useState(false);
@@ -43,13 +43,13 @@ const AdminLayout = () => {
       return;
     }
     switch (user?.role) {
+      case UserRole.guest:
+        // User has a valid role, no action needed
+        break;
       case UserRole.admin:
       case UserRole.superAdmin:
       case UserRole.manager:
-        // User has a valid role, no action needed
-        break;
-      case UserRole.guest:
-        navigate(paths.GuestDashboard);
+        navigate(paths.AdminDashboard);
         break;
       default:
         // Redirect to the index page if the role is invalid
@@ -77,4 +77,4 @@ const AdminLayout = () => {
   }
 };
 
-export default AdminLayout;
+export default GuestLayout;

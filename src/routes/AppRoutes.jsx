@@ -31,6 +31,12 @@ import UserProfile from "@pages/privatePages/users/UserProfile";
 import EditProfile from "@pages/privatePages/users/EditProfile";
 import OTP from "@pages/publicPages/forgotPassword/OTP";
 import NewPassword from "@pages/publicPages/forgotPassword/NewPassword";
+import UpdatePassword from "@pages/privatePages/users/UpdatePassword";
+import GuestLayout from "@pages/GuestPrivatePages/GuestLayout";
+import GuestDashboard from "@pages/GuestPrivatePages/guestDashboard/GuestDashboard";
+import GuestBookings from "@pages/GuestPrivatePages/guestBookings/GuestBookings";
+import GuestInvoices from "@pages/GuestPrivatePages/guestInvoices/GuestInvoices";
+
 
 
 const AppRoutes = () => (
@@ -71,10 +77,24 @@ const AppRoutes = () => (
       <Route path={`${paths.Users}/add`} element={<AddUser/>} />
       <Route path={`${paths.Users}/:id`} element={<UserProfile/>} />
       <Route path={`${paths.Users}/edit/:id`} element={<EditProfile/>} />
+      <Route path={`${paths.Users}/update/password/:id`} element={<UpdatePassword/>} />
       <Route path={paths.ApartmentManager} element={<ApartmentManager />} />
       <Route path={paths.AddApartment} element={<AddApartment />} />
       <Route path={`${paths.EditApartment}/:id`} element={<EditApartment />} />
       <Route path={`${paths.ApartmentManager}/:id`} element={<SingleApartment />} />
+    </Route>
+
+    {/* Guest Pages */}
+    <Route path={paths.Guest} element={<GuestLayout />}>
+      
+      <Route path={paths.GuestDashboard} element={<GuestDashboard />} />
+      <Route path={paths.GuestBookings} element={<GuestBookings />} />
+      <Route path={paths.GuestInvoice} element={<GuestInvoices />} />
+      <Route path={`${paths.GuestUser}/update/password/:id`} element={<UpdatePassword/>} />
+      <Route path={`${paths.GuestUser}/:id`} element={<UserProfile/>} />
+      <Route path={`${paths.GuestUser}/edit/:id`} element={<EditProfile/>} />
+      <Route path={`${paths.GuestBookings}/:id`} element={<BookingDetails />} />
+      <Route path={`${paths.GuestBookings}/update/:id`} element={<UpdateBooking />} />
     </Route>
   </Routes>
 );

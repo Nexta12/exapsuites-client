@@ -52,6 +52,7 @@ const DashboardStats = () => {
           </div>
         </div>
       </BoxWrapper>
+
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-yellow-500">
           <BsPeople className="text-2xl text-white" />
@@ -68,6 +69,7 @@ const DashboardStats = () => {
           </div>
         </div>
       </BoxWrapper>
+
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-red-500">
           <GiAbstract080 className="text-2xl text-white" />
@@ -82,6 +84,7 @@ const DashboardStats = () => {
           </div>
         </div>
       </BoxWrapper>
+      
       <BoxWrapper>
         <div className="rounded-full h-12 w-12 flex items-center justify-center bg-green-500">
           <BsEnvelope className="text-2xl text-white" />
@@ -98,7 +101,7 @@ const DashboardStats = () => {
   );
 };
 
-function BoxWrapper({ children }) {
+export function BoxWrapper({ children }) {
   return (
     <div className="bg-white rounded-sm p-4 flex-1 border border-gray-200 flex items-center ">
       {children}

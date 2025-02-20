@@ -5,12 +5,15 @@ import Spinner from "@components/Spinner";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
+import { UserRole } from "@utils/constants";
 import { DateFormatter } from "@utils/helpers";
 import {useEffect, useState } from "react";
 import { BsEnvelope, BsMarkerTip, BsPencil, BsTelephone } from "react-icons/bs";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Link, useNavigate, useParams } from "react-router-dom";
 const UserProfile = () => {
+  const { user } = useAuthStore()
   const navigate = useNavigate();
   const { id } = useParams();
   const [error, setError] = useState(null);
@@ -83,12 +86,14 @@ const UserProfile = () => {
     <div className="">
         <FaArrowLeftLong
                 onClick={() => handleGoBack()}
-                className="cursor-pointer text-2xl text-neutral-400 mb-2"
+                className="cursor-pointer text-2xl text-neutral-400 mb-2 lg:hidden "
               />
         {/* Render ErrorAlert if there's an error */}
         {error && <ErrorAlert message={error} />}
     <div className=" bg-white border border-neutral-300 p-5 flex flex-col lg:flex-row  relative">
-       <Link to={`${paths.Users}/edit/${userDetails._id}`} title="Edit Profile" className="absolute top-5 right-5 text-blue-500" ><BsPencil/></Link>
+      {(user.role === UserRole.manager || user.role === UserRole.superAdmin || user.id === userDetails._id) && ( 
+       <Link to={`${user.role !== UserRole.guest ? paths.Users : paths.GuestUser}/edit/${userDetails._id}`} title="Edit Profile" className="absolute top-5 right-5 text-blue-500" ><BsPencil/></Link>
+      ) }
       <div className="left flex-1 flex flex-col items-center lg:border-r-2 border-neutral-300 ">
         <img
           src={ userDetails.profilePic || userAvater }

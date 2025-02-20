@@ -1,5 +1,6 @@
 import InputField from "@components/Input";
 import Spinner from "@components/Spinner";
+import ErrorAlert from "@pages/errorPages/errorAlert";
 import { paths } from "@routes/paths";
 import useAuthStore, { getLoggedInUserPath } from "@store/authStore";
 import { useEffect, useState } from "react";
@@ -70,6 +71,8 @@ const Login = () => {
         {/* Title */}
 
         <div className=" z-20 w-[80%] lg:w-[40%] bg-accent p-5 rounded-md shadow-2xl ">
+       {error && <ErrorAlert message={error} />}
+
           <h3 className="h3 text-white flex items-center gap-x-2 justify-center">
             Login
             <FaLock
@@ -84,7 +87,7 @@ const Login = () => {
               value={values.email}
               onChange={handleChange}
               autoFocus
-              error={error}
+              required
             />
             <InputField
               placeholder="Password"
@@ -92,7 +95,7 @@ const Login = () => {
               type="password"
               value={values.password}
               onChange={handleChange}
-              error={error}
+              required
             />
             <button type="submit" className="btn btn-secondary hover:bg-black/65 w-full py-2 rounded-sm mb-4 ">
               {isLoading ? "Please Wait..." : "Submit"}

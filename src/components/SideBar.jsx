@@ -1,13 +1,16 @@
-import { DashBottomMenu, DashMiddleMenu } from "@dummy/adminMenu";
+import { DashBottomMenu, DashMiddleMenu, GuestDashenu } from "@dummy/adminMenu";
 import { ExapLogo } from "./Logo";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "@routes/paths";
 import useAuthStore from "@store/authStore";
+import { UserRole } from "@utils/constants";
 
 const SideBar = () => {
   const { pathname } = useLocation();
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   const navigate = useNavigate()
+
+  const DashBoardMenu = user.role !== UserRole.guest ? DashMiddleMenu : GuestDashenu
 
   return (
     <div className="hidden lg:flex flex-col bg-neutral-900 min-w-56  text-white ">
@@ -24,7 +27,7 @@ const SideBar = () => {
 
       {/* Middle Part */}
       <div className="flex-1 ">
-        {DashMiddleMenu.map((item, index) => {
+        {DashBoardMenu.map((item, index) => {
           return <SideBarLink key={index} item={item} pathname={pathname} />;
         })}
       </div>

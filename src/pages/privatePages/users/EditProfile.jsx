@@ -140,10 +140,10 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="mt-5 w-full md:w-[80%] lg:w-[70%] mx-auto ">
+    <div className="mt-5 w-full md:w-[80%] lg:w-[70%] mx-auto pb-5 ">
        <FaArrowLeftLong
                 onClick={() => handleGoBack()}
-                className="cursor-pointer text-2xl text-neutral-400 mb-2"
+                className="cursor-pointer text-2xl text-neutral-400 mb-2 lg:hidden"
               />
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
@@ -151,10 +151,6 @@ const EditProfile = () => {
         <div className=" w-full  flex flex-col lg:flex-row items-start justify-between gap-4">
           <div className="Left w-full bg-white border border-gray-200 p-5 flex-[2] ">
             <AlertMessage alert={message} />
-            <FaArrowLeftLong
-              onClick={() => handleGoBack()}
-              className="cursor-pointer text-2xl text-dark lg:hidden"
-            />
             <h3 className=" text-center text-accent uppercase mb-3">
               User Information
             </h3>

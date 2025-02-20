@@ -4,9 +4,10 @@ import Spinner from "@components/Spinner";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
 import { useEffect, useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const PaymentVerification = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +16,7 @@ const PaymentVerification = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useAuthStore()
 
   useEffect(() => {
     // If both trxref and reference are missing, redirect to home
@@ -65,15 +67,14 @@ const PaymentVerification = () => {
 
           {/* Additional Info */}
           <div className="mt-6 border-t border-gray-300 pt-4">
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-700 text-sm mb-6">
               You will receive a confirmation email shortly.
             </p>
           </div>
 
           {/* Button */}
-          <button className="mt-6 px-6 py-2 bg-accent text-white rounded-lg shadow-md hover:bg-accent-hover transition-all duration-300">
-            Go to Dashboard
-          </button>
+          <Link to={isAuthenticated ? paths.GuestDashboard : paths.Index } className=" px-6 py-2 bg-accent text-white rounded-lg shadow-md hover:bg-accent-hover transition-all duration-300" >{isAuthenticated ? 'Go to Dashboard' : 'Homepage' }</Link>
+       
         </div>
       </div>
     </section>

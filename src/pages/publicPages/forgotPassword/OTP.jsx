@@ -61,7 +61,6 @@ const OTP = () => {
       });
 
       removeLocalStorageItem("otp");
-      removeLocalStorageItem("otpEmail");
       setOtp("")
       setMessage({errorMessage: '', successMessage: 'OTP verified redirecting...'})
       setTimeout(()=>{

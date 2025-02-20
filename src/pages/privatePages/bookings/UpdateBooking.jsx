@@ -4,12 +4,15 @@ import CheckOut from "@components/CheckOut";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
+import { UserRole } from "@utils/constants";
 import { calculateTotalPrice, scrollUP } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateBooking = () => {
+  const { user } = useAuthStore();
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [checkOut, setCheckOut] = useState(null);
@@ -63,7 +66,9 @@ const UpdateBooking = () => {
         const oldEndDate = new Date(originalEndDate); // Use the original checkout date
         const newEndDate = new Date(checkOut);
         const millisecondsPerDay = 1000 * 60 * 60 * 24; // Number of milliseconds in a day
-        const nights = Math.ceil((newEndDate - oldEndDate) / millisecondsPerDay); // Round up to the nearest whole number
+        const nights = Math.ceil(
+          (newEndDate - oldEndDate) / millisecondsPerDay
+        ); // Round up to the nearest whole number
 
         setTotalNight(nights);
       } catch (error) {
@@ -76,7 +81,13 @@ const UpdateBooking = () => {
       setTotalCost(0);
       setTotalNight(0); // Reset total nights if inputs are invalid
     }
-  }, [bookingData.totalPayment, bookingData.apartmentId.price, bookingData.startDate, checkOut, originalEndDate]);
+  }, [
+    bookingData.totalPayment,
+    bookingData.apartmentId.price,
+    bookingData.startDate,
+    checkOut,
+    originalEndDate,
+  ]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -90,7 +101,7 @@ const UpdateBooking = () => {
       return;
     }
 
-    if (checkOut < new Date(originalEndDate) ) {
+    if (checkOut < new Date(originalEndDate)) {
       setMessage({
         errorMessage: "No Refund, Checkout must be in future date",
         successMessage: "",
@@ -100,13 +111,12 @@ const UpdateBooking = () => {
 
     const bookingDetails = {
       endDate: checkOut,
-      totalCost
+      totalCost,
     };
 
     setIsLoading(true);
 
     try {
-
       const response = await apiClient.put(
         `${endpoints.ExtendBookingDuration}/${id}`,
         bookingDetails
@@ -115,8 +125,17 @@ const UpdateBooking = () => {
       setCheckOut(null);
       scrollUP();
 
-      // Booking is Confirmed, redirect to Payment page.
-      navigate(`${paths.Bookings}/confirmation/${response.data._id}`);
+      if (user.role !== UserRole.guest) {
+        // Booking is Confirmed, redirect to Payment page for Admins
+        navigate(`${paths.Bookings}/confirmation/${response.data._id}`);
+      } else {
+        // Redirect to paystack payment payment.
+        const response = await apiClient.post(endpoints.makePayment, {
+          bookingId: id,
+        });
+        const paystackUrl = response.data.redirect_url;
+        window.location.href = paystackUrl;
+      }
     } catch (error) {
       setMessage({
         errorMessage: ErrorFormatter(error),
@@ -137,52 +156,56 @@ const UpdateBooking = () => {
   };
 
   return (
-    <div className="mt-5 w-full md:w-[80%] lg:w-[70%] mx-auto pb-10">
-      {message.errorMessage && <ErrorAlert message={message.errorMessage} />}
-      <form className="mb-10" onSubmit={handleSubmit}>
-        <div className="w-full flex flex-col lg:flex-row items-start justify-between gap-4">
-          <div className="Left w-full bg-white border border-gray-200 p-5 flex-[2]">
-            <FaArrowLeftLong
-              onClick={handleGoBack}
-              className="cursor-pointer text-2xl text-dark lg:hidden"
-            />
-            <h3 className="text-center text-accent font-semibold uppercase mb-10">
-              Extend Reservation
-            </h3>
-            <div className="flex flex-col md:flex-row gap-4 items-center">
-              <div className=" ">Old Checkout Date</div>
-              <div className="flex-1 border border-neutral-200 min-h-10 w-full py-2 pl-10 ">
-                {originalEndDate ? new Date(originalEndDate).toLocaleDateString() : "N/A"}
+    <div className="">
+      <FaArrowLeftLong
+        onClick={handleGoBack}
+        className="cursor-pointer text-2xl text-neutral-400 lg:hidden"
+      />
+      <div className="mt-5 w-full md:w-[80%] lg:w-[70%] mx-auto pb-10">
+        {message.errorMessage && <ErrorAlert message={message.errorMessage} />}
+        <form className="mb-10" onSubmit={handleSubmit}>
+          <div className="w-full flex flex-col lg:flex-row items-start justify-between gap-4">
+            <div className="Left w-full bg-white border border-gray-200 p-5 flex-[2]">
+              <h3 className="text-center text-accent font-semibold uppercase mb-10">
+                Extend Reservation
+              </h3>
+              <div className="flex flex-col md:flex-row gap-4 items-center">
+                <div className=" ">Old Checkout Date</div>
+                <div className="flex-1 border border-neutral-200 min-h-10 w-full py-2 pl-10 ">
+                  {originalEndDate
+                    ? new Date(originalEndDate).toLocaleDateString()
+                    : "N/A"}
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
-              <div className=" ">New Checkout Date</div>
-              <div className="flex-1 border border-neutral-200 min-h-10 w-full py-2">
-                <CheckOut onDateChange={setCheckOut} />
+              <div className="flex flex-col md:flex-row gap-4 items-center mt-4">
+                <div className=" ">New Checkout Date</div>
+                <div className="flex-1 border border-neutral-200 min-h-10 w-full py-2">
+                  <CheckOut onDateChange={setCheckOut} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        {/* Display total cost and total nights */}
-        {totalCost !== 0 && (
-          <div className="my-5 flex items-center justify-between gap-4 flex-wrap">
-            <h3 className="text-lg font-semibold">
-              Extended Duration: {totalNight} days
-            </h3>
-            <h3 className="text-lg font-semibold">
-              Additional Cost: ₦ {totalCost.toLocaleString()}
-            </h3>
+          {/* Display total cost and total nights */}
+          {totalCost !== 0 && (
+            <div className="my-5 flex items-center justify-between gap-4 flex-wrap">
+              <h3 className="text-lg font-semibold">
+                Extended Duration: {totalNight} days
+              </h3>
+              <h3 className="text-lg font-semibold">
+                Additional Cost: ₦ {totalCost.toLocaleString()}
+              </h3>
+            </div>
+          )}
+          <div className="w-full mt-5">
+            <button
+              type="submit"
+              className="btn btn-primary bg-blue-500 py-2 rounded-sm mx-auto"
+            >
+              {isLoading ? "Please wait..." : "Extend Reservation"}
+            </button>
           </div>
-        )}
-        <div className="w-full mt-5">
-          <button
-            type="submit"
-            className="btn btn-primary bg-blue-500 py-2 rounded-sm mx-auto"
-          >
-            {isLoading ? "Please wait..." : "Extend Reservation"}
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

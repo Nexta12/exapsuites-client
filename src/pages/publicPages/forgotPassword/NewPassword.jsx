@@ -1,12 +1,28 @@
 import InputField from "@components/Input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlertMessage from "@pages/errorPages/AlertMessage"; // Assuming you have an AlertMessage component
+import { apiClient } from "@api/apiClient";
+import { getLocalStorageItem, removeLocalStorageItem } from "@utils/localStorage";
+import { endpoints } from "@api/endpoints";
+import { useNavigate } from "react-router-dom";
+import { paths } from "@routes/paths";
 
 
 const NewPassword = () => {
   const [values, setValues] = useState({ password: "", confirmPassword: "" });
   const [message, setMessage] = useState({ errorMessage: "", successMessage: "" });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
+
+    const [email, setEmail] = useState("");
+  
+    useEffect(() => {
+      const email = getLocalStorageItem("otpEmail");
+  
+      setEmail(email);
+  
+      setLoading(false);
+    }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,11 +41,11 @@ const NewPassword = () => {
     }
 
     // Validate password strength (optional)
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-    if (!passwordRegex.test(values.password)) {
+    // const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    if (!(values.password)) {
       setLoading(false);
       return setMessage({
-        errorMessage: "Password must be at least 8 characters long and include a letter, number, and special character.",
+        errorMessage: "Provide password",
         successMessage: "",
       });
     }
@@ -38,20 +54,25 @@ const NewPassword = () => {
     const data = {
       password: values.password,
       confirmPassword: values.confirmPassword,
+      email
     };
 
     try {
       // Call your API to update the password
       // Example:
-      // const response = await apiClient.post("/update-password", data);
-      // console.log(response.data);
-
+      await apiClient.post(endpoints.ResetPassword, data);
+    
+      setMessage({ errorMessage: "", successMessage: "Password updated successfully!" });
       // Simulate API call for demonstration
-      console.log("Submitting data:", data);
+      removeLocalStorageItem("otpEmail");
+      setValues({
+        password: "",
+        confirmPassword: ""
+      })
       setTimeout(() => {
-        setMessage({ errorMessage: "", successMessage: "Password updated successfully!" });
         setLoading(false);
-      }, 2000);
+        navigate(paths.Login)
+      }, 3000);
     } catch (error) {
       console.error(error);
       setMessage({ errorMessage: "Failed to update password. Please try again.", successMessage: "" });

@@ -62,7 +62,7 @@ const ForgotPassword = () => {
                <AlertMessage alert={message} />
               <h3 className="h3 text-white flex items-center gap-x-2 justify-center">ForgotPassword <FaLock title="Secured by Next securities" className="text-black"/> </h3>
             <form action="" onSubmit={handleSubmit} >
-                <InputField placeholder='Email' name="email" onChange={(e)=> setEmail(e.target.value) } value={email} />
+                <InputField placeholder='Email' name="email" onChange={(e)=> setEmail(e.target.value) } value={email} required />
                 
                 <button type="submit" className="btn btn-secondary hover:bg-black/65 w-full py-2 rounded-sm mb-4 " >
                 

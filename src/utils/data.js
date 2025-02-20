@@ -44,6 +44,7 @@ export const totalKitchen = [
 export const totaluserRole = [
   {label: 'Admin', value: "Admin"},
   {label: 'Guest', value: "Guest"},
+  {label: 'Manager', value: "Manager"},
 ]
 export const genderData = [
   {label: 'Male', value: "male"},
