@@ -257,7 +257,10 @@ const Bookings = () => {
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
               <Link to={`${paths.Bookings}/${row._id}`}>View</Link>
+               {row.status !== 'expired' && (
               <Link   to={`${row.totalBalance > 0 ? `${paths.Bookings}/confirmation/${row._id}` : `${paths.Bookings}/update/${row._id}`}`}>Update</Link>
+            ) }
+
               { user.role === UserRole.superAdmin && ( <button
                 onClick={() => handleDelete(row._id)}
                 className="text-red-500"

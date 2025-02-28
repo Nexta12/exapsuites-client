@@ -47,12 +47,14 @@ const SingleApartment = () => {
   };
 
   return (
-    <div className="pb-[1px]  lg:px-6">
-      <div className="mt-5 mb-8 w-full flex items-center justify-between">
-        <FaArrowLeftLong
+    <div className="">
+       <FaArrowLeftLong
           onClick={() => handleGoBack()}
-          className="cursor-pointer text-2xl text-dark"
+          className="cursor-pointer text-2xl text-neutral-400 lg:hidden "
         />
+    <div className="pb-[1px]  lg:px-6">
+      <div className="mt-5 mb-8 w-full flex items-center justify-end">
+        
 
         <div className="">
           <Link
@@ -215,6 +217,7 @@ const SingleApartment = () => {
         </div>
       </div>
       
+    </div>
     </div>
   );
 };

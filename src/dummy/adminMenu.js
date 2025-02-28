@@ -53,11 +53,11 @@ export const GuestDashenu = [
       link: paths.GuestBookings,
       icon: FaRegAddressCard ,
     },
-    {
-      title: "Invoices",
-      link: paths.GuestInvoice,
-      icon: BsGraphUpArrow ,
-    },
+    // {
+    //   title: "Invoices",
+    //   link: paths.GuestInvoice,
+    //   icon: BsGraphUpArrow ,
+    // },
    
   ];
   

@@ -2,13 +2,10 @@
 
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
-import DeleteModal from "@components/DeleteModal";
 import Table from "@components/Table";
 import ErrorAlert from "@pages/errorPages/errorAlert";
-import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
 import useAuthStore from "@store/authStore";
-import { UserRole } from "@utils/constants";
 import { getNestedValue } from "@utils/helpers";
 import { useEffect, useRef, useState } from "react";
 import { FaArrowLeftLong, FaEllipsisVertical } from "react-icons/fa6";
@@ -20,32 +17,6 @@ const GuestBookings = () => {
   const [error, setError] = useState(null);
   const [visiblePopup, setVisiblePopup] = useState(null);
   const popupRef = useRef(null);
-
-  const [openModal, setOpenModal] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
-
-  const handleDelete = (value) => {
-    setOpenModal(true);
-    setItemToDelete(value);
-  };
-
-  const confirmDelete = async () => {
-    if (itemToDelete) {
-      try {
-        // Make an API call to delete the item
-        await apiClient.delete(`${endpoints.deleteBooking}/${itemToDelete}`);
-        // Remove the item from the list
-        setData((prev) => prev.filter((user) => user._id !== itemToDelete));
-
-        setOpenModal(false); // Close the modal
-        setItemToDelete(null); // Reset the item to delete
-      } catch (error) {
-        setError(ErrorFormatter(error));
-        setOpenModal(false); // Close the modal
-        setItemToDelete(null); // Reset the item to delete
-      }
-    }
-  };
 
   const togglePopup = (_id) => {
     setVisiblePopup((prev) => (prev === _id ? null : _id));
@@ -73,7 +44,7 @@ const GuestBookings = () => {
       header: "Reference",
       render: (value, row) => (
         <Link
-          to={`${row.totalBalance > 0 ? `${paths.Bookings}/confirmation/${row._id}` : `${paths.Bookings}/${row._id}`}`}
+        to={`${paths.GuestBookings}/${row._id}`}
           className="hover:underline block max-w-[200px] truncate text-blue-600"
           title={value} // Shows full text on hover
         >
@@ -87,15 +58,6 @@ const GuestBookings = () => {
       header: "Apartment",
       render: (_, row) => getNestedValue(row, "apartmentId.title"),
       className: 'capitalize'
-    },
-    {
-      key: "contactInfo.fullName",
-      header: "Guest",
-      className: 'capitalize',
-      render: (_, row) =>
-        `${getNestedValue(row, "contactInfo.firstName")} ${
-          getNestedValue(row, "contactInfo.lastName") || "Processing..."
-        }`,
     },
     {
       key: "startDate",
@@ -119,85 +81,7 @@ const GuestBookings = () => {
         return new Intl.NumberFormat("en-US").format(value);
       },
     },
-    {
-      key: "totalBalance",
-      header: "Balance (₦)",
-      render: (value) => {
-        if (typeof value === "number") {
-          // Determine the styles based on the value
-          let bgClass = "";
-          let textClass = "";
-    
-          if (value > 0) {
-            bgClass = "bg-red-100";
-            textClass = "text-red-800 capitalize text-[12px]";
-          } else {
-            // Fallback for unexpected values
-            bgClass = "bg-gray-100";
-            textClass = "text-gray-800 whitespace-nowrap capitalize";
-          }
-    
-          return (
-            <span
-              className={`px-2 py-1 rounded text-sm font-medium ${bgClass} ${textClass}`}
-            >
-              {new Intl.NumberFormat("en-US").format(value)} 
-            </span>
-          );
-        }
-    
-        // Return a fallback or null if the value is not a number
-        return 0; // or return some default JSX if needed
-      },
-    },
-    {
-      key: "paymentStatus",
-      header: "Payment Status",
-      render: (value) => {
-        if (typeof value === "string") {
-          // Determine the styles based on the value
-          let bgClass = "";
-          let textClass = "";
-          switch (value) {
-            case "pending":
-              value = "in progress";
-              bgClass = "bg-yellow-100";
-              textClass = "text-yellow-800 capitalize text-[12px] ";
-              break;
-            case "failed":
-              bgClass = "bg-red-100";
-              textClass = "text-red-800 capitalize text-[12px] ";
-              break;
-            case "paid":
-              value = "Successful";
-              bgClass = "bg-green-500";
-              textClass = "text-white capitalize text-[12px] ";
-              break;
-            case "part payment":
-              value = "Incomplete";
-              bgClass = "bg-blue-500";
-              textClass = "text-white capitalize text-[12px] ";
-              break;
-            default:
-              // Fallback for unexpected values
-              bgClass = "bg-gray-100";
-              textClass = "text-gray-800 whitespace-nowrap capitalize ";
-            
-          }
-
-          return (
-            <span
-              className={`px-2 py-1 rounded text-sm font-medium ${bgClass} ${textClass}`}
-            >
-              {value}
-            </span>
-          );
-        }
-
-        // Fallback for unexpected types
-        return null;
-      },
-    },
+ 
     {
       key: "status",
       header: "Booking Status",
@@ -259,14 +143,9 @@ const GuestBookings = () => {
               className="absolute bg-white border rounded shadow p-2 top-[-4px] right-0 z-10 flex items-center gap-3"
             >
               <Link to={`${paths.GuestBookings}/${row._id}`}>View</Link>
+              {row.status !== 'expired' && (
               <Link to={`${paths.GuestBookings}/update/${row._id}`}>Update</Link>
-            
-              { user.role === UserRole.superAdmin && ( <button
-                onClick={() => handleDelete(row._id)}
-                className="text-red-500"
-              >
-                Delete
-              </button>) }
+            )}
              
             </div>
           )}
@@ -301,7 +180,7 @@ const GuestBookings = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [user.id]);
 
   const navigate = useNavigate();
   const handleGoBack = () => {
@@ -318,12 +197,6 @@ const GuestBookings = () => {
           onClick={() => handleGoBack()}
           className="cursor-pointer text-2xl text-neutral-400 lg:hidden"
         />
-      <DeleteModal
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
-        onConfirm={confirmDelete}
-        message="Are you Sure You want to this item ?"
-      />
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
 

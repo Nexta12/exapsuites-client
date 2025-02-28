@@ -4,12 +4,15 @@ import Spinner from "@components/Spinner";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
+import { UserRole } from "@utils/constants";
 import { DateFormatter } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 const BookingDetails = () => {
+  const { user } = useAuthStore()
   const navigate = useNavigate();
   const { id } = useParams();
   const [error, setError] = useState(null);
@@ -55,6 +58,19 @@ const BookingDetails = () => {
         />
       {/* Render ErrorAlert if there's an error */}
       {error && <ErrorAlert message={error} />}
+
+      <div className="mt-5 mb-8 w-full flex items-center justify-end">
+        {bookingDetails.status !== 'expired' && ( 
+        <div className="">
+          <Link
+            to={`${user.role !== UserRole.guest ? paths.Bookings : paths.GuestBookings }/update/${bookingDetails._id}`}
+            className="btn btn-primary py-2 rounded-sm whitespace-nowrap"
+          >
+            Extend Booking
+          </Link>
+        </div>
+        ) }
+      </div>
 
       <div className="bg-white w-full md:w-[80%]  mx-auto p-4 lg:p-10 border border-gray-300 ">
         <div className="">

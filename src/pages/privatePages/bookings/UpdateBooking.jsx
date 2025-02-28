@@ -21,7 +21,7 @@ const UpdateBooking = () => {
     errorMessage: "",
     successMessage: "",
   });
-  const [totalCost, setTotalCost] = useState(0);
+  const [extensionCost, setExtentionCost] = useState(0);
   const [totalNight, setTotalNight] = useState(0); // Total No of Days the guest will stay
   const [bookingData, setBookingData] = useState({
     startDate: "",
@@ -59,9 +59,19 @@ const UpdateBooking = () => {
           checkOut,
           bookingData.apartmentId.price
         );
+
         const deductedCost = cost - bookingData.totalPayment;
 
-        setTotalCost(deductedCost);
+        if(deductedCost === 0) {
+           setMessage({
+            errorMessage: "New checkout date must be in the future",
+            successMessage: "",
+          });
+
+          return;
+        }
+
+        setExtentionCost(deductedCost);
 
         const oldEndDate = new Date(originalEndDate); // Use the original checkout date
         const newEndDate = new Date(checkOut);
@@ -78,7 +88,7 @@ const UpdateBooking = () => {
         });
       }
     } else {
-      setTotalCost(0);
+      setExtentionCost(0);
       setTotalNight(0); // Reset total nights if inputs are invalid
     }
   }, [
@@ -101,7 +111,8 @@ const UpdateBooking = () => {
       return;
     }
 
-    if (checkOut < new Date(originalEndDate)) {
+
+    if (checkOut <= new Date(originalEndDate)) {
       setMessage({
         errorMessage: "No Refund, Checkout must be in future date",
         successMessage: "",
@@ -111,7 +122,7 @@ const UpdateBooking = () => {
 
     const bookingDetails = {
       endDate: checkOut,
-      totalCost,
+      extensionCost,
     };
 
     setIsLoading(true);
@@ -186,13 +197,13 @@ const UpdateBooking = () => {
             </div>
           </div>
           {/* Display total cost and total nights */}
-          {totalCost !== 0 && (
+          {extensionCost !== 0 && (
             <div className="my-5 flex items-center justify-between gap-4 flex-wrap">
               <h3 className="text-lg font-semibold">
                 Extended Duration: {totalNight} days
               </h3>
               <h3 className="text-lg font-semibold">
-                Additional Cost: ₦ {totalCost.toLocaleString()}
+                Additional Cost: ₦ {extensionCost.toLocaleString()}
               </h3>
             </div>
           )}

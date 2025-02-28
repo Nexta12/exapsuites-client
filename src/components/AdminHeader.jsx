@@ -212,18 +212,7 @@ const AdminHeader = () => {
       setError(ErrorFormatter(error));
     }
   };
-  const handleDeleteMessage = async (item) => {
-    try {
-      await apiClient.delete(`${endpoints.deleteMessage}/${item._id}`);
-      // Remove the deleted message from the local state
-      setContactMessages((prevData) =>
-        prevData.filter((msg) => msg._id !== item._id)
-      );
-    } catch (error) {
-      setError(ErrorFormatter(error));
-    }
-  };
-    
+
   // Choose Which Menu to display
    const DashBoardMenu = user.role !== UserRole.guest ? DashMiddleMenu : GuestDashenu
 
@@ -312,12 +301,6 @@ const AdminHeader = () => {
                                 </p>
                               </Link>
                             </div>
-                            <AiOutlineDelete
-                              role="button"
-                              onClick={() => handleDeleteMessage(item)}
-                              className="text-red-500 cursor-pointer mr-4 !text-[16px]"
-                              title="Delete"
-                            />
                           </div>
                         ))}
                       </>
@@ -388,12 +371,14 @@ const AdminHeader = () => {
                               </h3>
                               <p className="text-xs">{item.message}</p>
                             </div>
+                            <div className="">
                             <AiOutlineDelete
                               role="button"
                               onClick={() => handleDeleteNotice(item)}
-                              className="text-red-500 cursor-pointer mr-4 !text-[26px]"
+                              className="text-red-500 cursor-pointer mr-4 text-[16px]"
                               title="Delete"
                             />
+                            </div>
                           </div>
                         ))}
                       </>
@@ -522,6 +507,11 @@ const AdminHeader = () => {
           {ExpenseDates.some((data) => data.status === "pending" && user.role === UserRole.manager ) && (
             <>
               <h2 className="mx-40">You have an unapproved expenditure request </h2>
+            </>
+          )}
+          {contactMessages.some((data) => !data.reply  && user.role === UserRole.manager ) && (
+            <>
+              <h2 className="mx-40">You have an un replied message </h2>
             </>
           )}
         </Marquee>

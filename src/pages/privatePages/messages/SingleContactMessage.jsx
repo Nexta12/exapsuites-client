@@ -1,9 +1,13 @@
 import { apiClient } from "@api/apiClient";
 import { endpoints } from "@api/endpoints";
+import EnhancedInput from "@components/EnhancedInput";
+import EnhancedTextArea from "@components/EnhancedTextArea";
 import Spinner from "@components/Spinner";
+import AlertMessage from "@pages/errorPages/AlertMessage";
 import ErrorAlert from "@pages/errorPages/errorAlert";
 import { ErrorFormatter } from "@pages/errorPages/ErrorFormatter";
 import { paths } from "@routes/paths";
+import useAuthStore from "@store/authStore";
 import { DateFormatter } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -11,11 +15,14 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const SingleContactMessage = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore()
   const { id } = useParams();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [isloading, setIsLoading] = useState(false);
   const [singlemessage, setSingleMessage] = useState({});
+  const [reply, setReply] = useState("");
+  const [message, setMessage] = useState({errorMessage: "", successMessage: ""})
 
   const handleGoBack = () => {
     if (window.history.length > 1) {
@@ -44,42 +51,90 @@ const SingleContactMessage = () => {
 
     fetchMessage();
   }, [id]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    const data = {
+      reply,
+      email: singlemessage.email,
+      repliedBy:user.id
+    };
+
+    try {
+     await apiClient.put(
+        `${endpoints.replyMessage}/${singlemessage._id}`,
+        data
+      );
+      setReply("")
+      setMessage({errorMessage: "", successMessage: "Reply Sent to user email"})
+      setTimeout(()=>{
+         window.location.reload();
+      },3000)
+    } catch (error) {
+      setError(ErrorFormatter(error));
+    }finally{
+      setIsLoading(false)
+    }
+  };
 
   if (loading) return <Spinner />;
 
   return (
-    <div className="flex">
-      {/* Render ErrorAlert if there's an error */}
+    <div className="pb-10">
       {error && <ErrorAlert message={error} />}
-      <div className="bg-white/80 w-full p-4 lg:p-10  rounded-lg">
-        <FaArrowLeftLong
-          onClick={() => handleGoBack()}
-          className="cursor-pointer text-2xl text-dark"
-        />
-        <div className="w-full flex items-center justify-between my-10">
-          <div className="letf flex flex-col gap-y-3">
-            <div className="!mb-0  ">
-              <span className="font-semibold mr-4">Sender:</span>{" "}
-              {singlemessage?.fullName}
-            </div>
-
-            <span className="text-sm">
-              {" "}
-              <span className="font-semibold mr-4">Sender Email:</span>{" "}
-              {singlemessage?.email}
-            </span>
-
-            <span className="text-sm">
-              {" "}
-              <span className="font-semibold mr-4">Sender Phone:</span>{" "}
-              {singlemessage?.phone}
-            </span>
+      <FaArrowLeftLong
+        onClick={() => handleGoBack()}
+        className="cursor-pointer text-2xl text-neutral-400 lg:hidden"
+      />
+      <div className="w-full lg:w-[70%] bg-white  mt-3 text-sm italic p-3 rounded ">
+        {singlemessage?.message}
+        <div className="flex flex-col gap-y-1 mt-5">
+          <span>{singlemessage?.fullName}</span>
+          <span>{singlemessage?.phone}</span>
+          <span>{DateFormatter(singlemessage?.createdAt)}</span>
+        </div>
+      </div>
+       {singlemessage.reply && (
+      <div className="w-full lg:w-[50%] bg-sky-300 ml-auto mt-3 text-sm italic p-3 rounded ">
+        <h3 className="text-center underline my-3" >Admin Reply</h3>
+        {singlemessage?.reply}
+        <div className="flex flex-col gap-y-1 mt-5">
+          <span>{singlemessage?.repliedBy?.lastName} {singlemessage?.repliedBy?.firstName} ({singlemessage?.repliedBy?.role}) </span>
+          <span>{DateFormatter(singlemessage?.replyDate)}</span>
+        </div>
+      </div>
+       )}
+       {(!singlemessage.reply || !singlemessage.reply === "") && (
+      <div className="my-4 w-full lg:w-[50%] mx-auto">
+        <h3 className="h3 text-primary">Reply Message</h3>
+        <AlertMessage alert={message}/>
+        <form action="#" onSubmit={handleSubmit}>
+          <div className="bg-white">
+            <EnhancedInput
+              type="email"
+              value={singlemessage?.email}
+              name="email"
+              disabled
+            />
           </div>
 
-          <p className="text-sm">{DateFormatter(singlemessage?.createdAt)}</p>
-        </div>
-        <div className="text">{singlemessage?.message}</div>
+          <EnhancedTextArea
+            value={reply}
+            name="reply"
+            onChange={(e) => setReply(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="btn bg-blue-500 btn-primary py-2 rounded-sm mx-auto"
+          >
+            {isloading ? "Please wait..." : "Reply Message"}
+          </button>
+        </form>
       </div>
+      )}
     </div>
   );
 };

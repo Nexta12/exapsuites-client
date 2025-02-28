@@ -22,6 +22,7 @@ export const endpoints = {
     SendContactMessage: '/api/contact/create',
     getAllMessages: '/api/contact/getAll',
     getSingleMessage: '/api/contact/getOne',
+    replyMessage: '/api/contact/reply',
     deleteMessage: '/api/contact/delete',
     getAllUsers: '/api/user/getAll',
     getUserDetails: '/api/user/getOne',

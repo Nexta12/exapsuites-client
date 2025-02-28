@@ -51,7 +51,7 @@ const AddnewExpenditure = () => {
       });
       setMessage({
         errorMessage: "",
-        successMessage: "Expense recorded successfully",
+        successMessage: "Expense Submitted for Approval",
       });
       scrollUP();
     } catch (error) {

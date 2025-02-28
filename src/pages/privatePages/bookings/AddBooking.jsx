@@ -35,6 +35,7 @@ const AddBooking = () => {
     email: "",
     phone: "",
     gender: "",
+    address: "",
     apartmentId: "",
     startDate: "",
     endDate: "",
@@ -134,6 +135,7 @@ const AddBooking = () => {
       gender: bookingData.gender,
       email: bookingData.email,
       phone: bookingData.phone,
+      address: bookingData.address,
       apartmentId: bookingData.apartmentId,
       startDate: checkIn,
       endDate: checkOut,
@@ -154,6 +156,7 @@ const AddBooking = () => {
         lastName: "",
         email: "",
         phone: "",
+        address: "",
         apartmentId: "",
         startDate: "",
         endDate: "",
@@ -256,8 +259,19 @@ const AddBooking = () => {
                   onChange={handleInputChange}
                   value={bookingData.email}
                 />
+              
                 </div>
-                 <div className="flex-1 w-full !text-md -mt-4">
+                <div className="flex-1 w-full !text-md">
+                <EnhancedInput
+                  name="address"
+                  id="address"
+                  placeholder="Address*"
+                  onChange={handleInputChange}
+                  value={bookingData.address}
+                />
+              
+                </div>
+                 <div className="flex-[0.5] w-full !text-md -mt-4">
                   <EnhancedSelect
                     name="gender"
                     id="gender"

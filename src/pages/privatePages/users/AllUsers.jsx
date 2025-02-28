@@ -217,12 +217,14 @@ const AdminStaff = () => {
         />
         <h1 className="text-primary tracking-[1px]">All Users ({data.length}) </h1>
         <div className="">
+          {(user.role === UserRole.superAdmin || user.role === UserRole.manager) && (
           <Link
             to={`${paths.Users}/add`}
             className="btn btn-primary py-2 rounded-sm"
           >
             Add New
           </Link>
+           )}
         </div>
         {/* Table */}
       </div>

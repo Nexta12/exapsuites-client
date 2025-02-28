@@ -17,8 +17,8 @@ export const  facilities = [
   { name: 'Coffee', icon: <FaCoffee /> },
   { name: 'Bath', icon: <FaBath /> },
   { name: 'Parking Space', icon: <FaParking /> },
-  { name: 'Swimming Pool', icon: <FaSwimmingPool /> },
+  { name: 'Smart TVs', icon: <FaSwimmingPool /> },
   { name: 'Breakfast', icon: <FaHotdog /> },
-  { name: 'GYM', icon: <FaStopwatch /> },
+  { name: 'Cozy Rooms', icon: <FaStopwatch /> },
   { name: 'Drinks', icon: <FaCocktail /> },
 ]
